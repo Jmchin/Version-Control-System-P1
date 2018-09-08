@@ -1,8 +1,8 @@
 // 362 Software Engineering Project 1
 // Authors:
 //     Kevin Molina-Heineck - kevin.molina@csu.fullerton.edu
-// 
-// 
+//     @@Add your names here@@
+//     @@@@@@@@@@@@@@@@@@@@@@@
 // 
 // Description:
 //     TODO
@@ -10,12 +10,19 @@
 using namespace std;
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <sstream>
 
 #define WEIGHT_ONE 1
 #define WEIGHT_TWO 3
 #define WEIGHT_THREE 7
 #define WEIGHT_FOUR 11
 #define WEIGHT_FIVE 17
+#define INT_MAX 2147483647
+
+string CheckSum(string fileName);
+void Create();
+string FormatFileName(long long sum, int count, string extension);
 
 int main() {
     bool f = true;
@@ -29,7 +36,7 @@ int main() {
         cout << "C - Create a repository for the given project source tree" << endl;
         cout << "and all its files, including their folder paths within the project" << endl;
         cout << endl;
-        cout << "Q - Quit the program" << endl;
+        cout << "Q - Quit the program" << endl << endl;
 
         cin >> input;
 
@@ -55,8 +62,12 @@ void Create() {
     cout << "Enter destination folder path: ";
     cin >> destination;
 
-    
-
+    // TODO
+    // Remove hard-coded stub test code here
+    // Figure out how he wants us to do directory stuff
+    // e.g. use a library like Boost or manually recurse
+    // Idm doing it - Kevin
+    CheckSum("foo.txt");
 
 }
 
@@ -70,8 +81,65 @@ void Create() {
 // extension. The 5 weights by which each 5 character
 // group are multiplied are 1, 3, 7, 11, and, 17
 //
-// INPUT: File reference
+// INPUT: File name
 // OUTPUT: string representing checksum to be used as filename
-string CheckSum() {
+string CheckSum(string fileName) {
+
+    ifstream myFile(fileName.c_str());
+    if(myFile.fail()) {
+        // Don't have to handle this
+        // Should probably moduralize this too
+        cout << "Error opening file";
+    }
+    else {
+        char ch;
+        int count = 0;
+        long long sum = 0;
+
+        while(EOF != (ch = myFile.get())) {
+            switch(count % 5) {
+                case 0:
+                    sum += WEIGHT_ONE * ch;
+                    sum = sum % INT_MAX;
+                    break;
+                case 1:
+                    sum += WEIGHT_TWO * ch;
+                    sum = sum % INT_MAX;
+                    break;
+                case 2:
+                    sum += WEIGHT_THREE * ch;
+                    sum = sum % INT_MAX;
+                    break;
+                case 3:
+                    sum += WEIGHT_FOUR * ch;
+                    sum = sum % INT_MAX;
+                    break;
+                case 4:
+                    sum += WEIGHT_FIVE * ch;
+                    sum = sum % INT_MAX;
+                    break;
+                default:
+                    break;
+            }
+            count++;
+        }
+        
+        myFile.close();
+        return FormatFileName(sum, count, ".txt"); 
+    }
+    
+
+}
+
+
+
+// Convience method to format the filenames. 
+// Pass in sum, count, and extension <e.g. '.txt'>
+string FormatFileName(long long sum, int count, string extension) {
+    string output;
+    stringstream ss;
+    ss << sum << "-L" << count << extension;
+
+    return ss.str();
 
 }
