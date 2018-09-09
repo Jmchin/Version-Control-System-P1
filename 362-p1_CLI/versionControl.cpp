@@ -31,8 +31,7 @@ void FolderifyLeaf(string qualfiedPath);
 int main() {
     bool f = true;
     char input;
-    FolderifyLeaf("/home/kevin/Desktop/test1/Foo/yolooo");
-    return 0;
+
     do {
         cout << "******** Team CLI's VCS System ********" << endl;
         cout << endl;
@@ -67,12 +66,18 @@ void Create() {
     cout << "Enter destination folder path: ";
     cin >> destination;
 
-    // TODO
-    // Remove hard-coded stub test code here
-    // Figure out how he wants us to do directory stuff
-    // e.g. use a library like Boost or manually recurse
-    // Idm doing it - Kevin
-    CheckSum("foo.txt");
+    path po(source.c_str());
+
+    // Does it all in directory s.
+    for(directory_entry& p: recursive_directory_iterator(s)) {
+        if(is_regular_file(p.path())) {
+            FolderifyLeaf(p.path().string());
+        }
+    }
+
+    // ADD - Copy directory S into destination directory. Should literally be a call to 
+    // Boost's copy_file or copy_directory or copy_path (or something)
+    // Look at my code/look into the path file type 
 
 }
 
