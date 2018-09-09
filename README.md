@@ -2,4 +2,9 @@
 
 Dependencies:
     * Boost library
-        - Get with <sudo apt-get install libboost-all-de
+        - Get with <sudo apt-get install libboost-all-dev>
+
+
+Usage:
+    * Run versionControl.cpp with <g++ versionControl.cpp -lboost_filesystem -lboost_system>
+    * Run output with <./a.out>

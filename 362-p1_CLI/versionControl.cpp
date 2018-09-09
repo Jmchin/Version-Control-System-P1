@@ -7,13 +7,14 @@
 // Description:
 //     TODO
 
-using namespace std;
-using namespace boost::filesystem;
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <boost/filesystem.hpp>
+
+using namespace std;
+using namespace boost::filesystem;
 
 #define WEIGHT_ONE 1
 #define WEIGHT_TWO 3
@@ -25,11 +26,13 @@ using namespace boost::filesystem;
 string CheckSum(string fileName);
 void Create();
 string FormatFileName(long long sum, int count, string extension);
+void FolderifyLeaf(string qualfiedPath);
 
 int main() {
     bool f = true;
     char input;
-
+    FolderifyLeaf("/home/kevin/Desktop/test1/Foo/yolooo");
+    return 0;
     do {
         cout << "******** Team CLI's VCS System ********" << endl;
         cout << endl;
@@ -127,7 +130,9 @@ string CheckSum(string fileName) {
         }
         
         myFile.close();
-        return FormatFileName(sum, count, ".txt"); 
+        path myPath(fileName.c_str());
+        string ext = myPath.extension().string();
+        return FormatFileName(sum, count, ext); 
     }
     
 
@@ -163,11 +168,24 @@ void FolderifyLeaf(string qualfiedPath) {
                 // Name from CheckSum output already (weird edge case)
                 // Never gunna happen, but should be handled eventually
                 string checkSum = CheckSum(qualfiedPath);
-                const char* newFolderName = checkSum.c_str();
 
-                // Boost uses a path data type for the path
-                path newDir(newFolderName);
-                create_directory(newDir);
+                // Get the parent path/dir from qualified path to file
+                path newFilePath = p.parent_path();
+                newFilePath += "/" + checkSum;
+
+                // Rename file with checksum
+                // Check for rename funct in boost
+                copy_file(p, newFilePath);
+                remove(p);
+                create_directory(p);
+
+                path finalDest = p.string() + "/" + checkSum;
+                copy_file(newFilePath, finalDest);
+                remove(newFilePath);
+                // Append / + filename to new path (Hacky)
+                // Dont need?
+                //newFilePath += "/" + p.filename().string();
+                // TODO - Remove old file
 
             }
             else {
