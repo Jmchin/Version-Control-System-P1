@@ -8,10 +8,12 @@
 //     TODO
 
 using namespace std;
+using namespace boost::filesystem;
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <boost/filesystem.hpp>
 
 #define WEIGHT_ONE 1
 #define WEIGHT_TWO 3
@@ -142,4 +144,44 @@ string FormatFileName(long long sum, int count, string extension) {
 
     return ss.str();
 
+}
+
+// Description:
+//     Converts a 'leaf' file into a folder w/ 'Checksum' naming
+//     Then moves the old file into the new folder, handling cleanup
+// 
+// INPUT: Fully qualified path to file (e.g. /home/kevin/Desktop/foo.cpp)
+// OUTPUT: None
+void FolderifyLeaf(string qualfiedPath) {
+    path p(qualfiedPath);
+
+    try {
+        if(exists(p)) {
+            // This is a leaf file!
+            if(is_regular_file(p)) {
+                // TODO - Handle case where folder exists with 
+                // Name from CheckSum output already (weird edge case)
+                // Never gunna happen, but should be handled eventually
+                string checkSum = CheckSum(qualfiedPath);
+                const char* newFolderName = checkSum.c_str();
+
+                // Boost uses a path data type for the path
+                path newDir(newFolderName);
+                create_directory(newDir);
+
+            }
+            else {
+                // Use qualified path instead? Haven't tested p
+                cout << p << "exists, but is not a leaf file";
+            }
+        }
+        else {
+            cout << p << "Doesn't exist";
+        }
+    }
+    catch (const filesystem_error& ex) {
+            cout << ex.what() << endl;
+    }
+
+    return;
 }
