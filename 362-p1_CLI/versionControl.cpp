@@ -54,7 +54,7 @@ int main() {
         }
 
     } while (toupper(input) != 'Q');
-    
+
     return 0;
 }
 
@@ -97,7 +97,8 @@ void Create() {
 // OUTPUT: string representing checksum to be used as filename
 string CheckSum(string fileName) {
 
-    ifstream myFile(fileName.c_str());
+    std::ifstream myFile(fileName.c_str());
+
     if(myFile.fail()) {
         // Don't have to handle this
         // Should probably moduralize this too
@@ -135,19 +136,19 @@ string CheckSum(string fileName) {
             }
             count++;
         }
-        
+
         myFile.close();
         path myPath(fileName.c_str());
         string ext = myPath.extension().string();
-        return FormatFileName(sum, count, ext); 
+        return FormatFileName(sum, count, ext);
     }
-    
+
 
 }
 
 
 
-// Convience method to format the filenames. 
+// Convience method to format the filenames.
 // Pass in sum, count, and extension <e.g. '.txt'>
 string FormatFileName(long long sum, int count, string extension) {
     string output;
@@ -161,7 +162,7 @@ string FormatFileName(long long sum, int count, string extension) {
 // Description:
 //     Converts a 'leaf' file into a folder w/ 'Checksum' naming
 //     Then moves the old file into the new folder, handling cleanup
-// 
+//
 // INPUT: Fully qualified path to file (e.g. /home/kevin/Desktop/foo.cpp)
 // OUTPUT: None
 void FolderifyLeaf(string qualfiedPath) {
@@ -171,7 +172,7 @@ void FolderifyLeaf(string qualfiedPath) {
         if(exists(p)) {
             // This is a leaf file!
             if(is_regular_file(p)) {
-                // TODO - Handle case where folder exists with 
+                // TODO - Handle case where folder exists with
                 // Name from CheckSum output already (weird edge case)
                 // Never gunna happen, but should be handled eventually
                 string checkSum = CheckSum(qualfiedPath);
