@@ -1,9 +1,10 @@
 // 362 Software Engineering Project 1
 // Authors:
 //     Kevin Molina-Heineck - kevin.molina@csu.fullerton.edu
+//     Justin Chin - jmchin@csu.fullerton.edu
 //     @@Add your names here@@
 //     @@@@@@@@@@@@@@@@@@@@@@@
-// 
+//
 // Description:
 //     TODO
 
@@ -68,26 +69,27 @@ void Create() {
 
     path po(source.c_str());
 
-    // Does it all in directory s.
-    for(directory_entry& p: recursive_directory_iterator(s)) {
+    // Does it all in directory po.
+    for(directory_entry& p: recursive_directory_iterator(po)) {
         if(is_regular_file(p.path())) {
+          cout << "folderifying: " << p.path().string() << endl;
             FolderifyLeaf(p.path().string());
         }
     }
 
-    // ADD - Copy directory S into destination directory. Should literally be a call to 
+    // ADD - Copy directory S into destination directory. Should literally be a call to
     // Boost's copy_file or copy_directory or copy_path (or something)
-    // Look at my code/look into the path file type 
+    // Look at my code/look into the path file type
 
 }
 
 // ****** CheckSum ******
-// 
+//
 // DESCRIPTION:
 // Creates a rolling 5-byte weighted checksum of all the
-// characters (ASCII bytes) in the file (i.e., the bytes 
+// characters (ASCII bytes) in the file (i.e., the bytes
 // in the file's contents) followed by a hyphen and an
-// “L” and the integer file size, followed by the file's 
+// “L” and the integer file size, followed by the file's
 // extension. The 5 weights by which each 5 character
 // group are multiplied are 1, 3, 7, 11, and, 17
 //
