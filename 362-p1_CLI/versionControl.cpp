@@ -14,7 +14,6 @@
 #include <sstream>
 #include <boost/filesystem.hpp>
 
-using namespace std;
 using namespace boost::filesystem;
 
 #define WEIGHT_ONE 1
@@ -24,26 +23,26 @@ using namespace boost::filesystem;
 #define WEIGHT_FIVE 17
 #define INT_MAX 2147483647
 
-string CheckSum(string fileName);
+std::string CheckSum(std::string fileName);
 void Create();
-string FormatFileName(long long sum, int count, string extension);
-void FolderifyLeaf(string qualfiedPath);
+std::string FormatFileName(long long sum, int count, std::string extension);
+void FolderifyLeaf(std::string qualfiedPath);
 
 int main() {
     bool f = true;
     char input;
 
     do {
-        cout << "******** Team CLI's VCS System ********" << endl;
-        cout << endl;
-        cout << "The following commands are available:" << endl;
-        cout << endl;
-        cout << "C - Create a repository for the given project source tree" << endl;
-        cout << "and all its files, including their folder paths within the project" << endl;
-        cout << endl;
-        cout << "Q - Quit the program" << endl << endl;
+        std::cout << "******** Team CLI's VCS System ********" << std::endl;
+        std::cout << std::endl;
+        std::cout << "The following commands are available:" << std::endl;
+        std::cout << std::endl;
+        std::cout << "C - Create a repository for the given project source tree" << std::endl;
+        std::cout << "and all its files, including their folder paths within the project" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Q - Quit the program" << std::endl << std::endl;
 
-        cin >> input;
+        std::cin >> input;
 
         switch(toupper(input)){
             case 'C':
@@ -59,20 +58,20 @@ int main() {
 }
 
 void Create() {
-    string source;
-    string destination;
+    std::string source;
+    std::string destination;
 
-    cout << "Enter source folder path: ";
-    cin >> source;
-    cout << "Enter destination folder path: ";
-    cin >> destination;
+    std::cout << "Enter source folder path: ";
+    std::cin >> source;
+    std::cout << "Enter destination folder path: ";
+    std::cin >> destination;
 
     path po(source.c_str());
 
     // Does it all in directory po.
     for(directory_entry& p: recursive_directory_iterator(po)) {
         if(is_regular_file(p.path())) {
-          cout << "folderifying: " << p.path().string() << endl;
+          std::cout << "folderifying: " << p.path().string() << std::endl;
             FolderifyLeaf(p.path().string());
         }
     }
@@ -95,14 +94,14 @@ void Create() {
 //
 // INPUT: File name
 // OUTPUT: string representing checksum to be used as filename
-string CheckSum(string fileName) {
+std::string CheckSum(std::string fileName) {
 
     std::ifstream myFile(fileName.c_str());
 
     if(myFile.fail()) {
         // Don't have to handle this
         // Should probably moduralize this too
-        cout << "Error opening file";
+        std::cout << "Error opening file";
     }
     else {
         char ch;
@@ -139,10 +138,11 @@ string CheckSum(string fileName) {
 
         myFile.close();
         path myPath(fileName.c_str());
-        string ext = myPath.extension().string();
+        std::string ext = myPath.extension().string();
         return FormatFileName(sum, count, ext);
     }
 
+    exit(-1);
 
 }
 
@@ -150,9 +150,9 @@ string CheckSum(string fileName) {
 
 // Convience method to format the filenames.
 // Pass in sum, count, and extension <e.g. '.txt'>
-string FormatFileName(long long sum, int count, string extension) {
-    string output;
-    stringstream ss;
+std::string FormatFileName(long long sum, int count, std::string extension) {
+    std::string output;
+    std::stringstream ss;
     ss << sum << "-L" << count << extension;
 
     return ss.str();
@@ -165,8 +165,8 @@ string FormatFileName(long long sum, int count, string extension) {
 //
 // INPUT: Fully qualified path to file (e.g. /home/kevin/Desktop/foo.cpp)
 // OUTPUT: None
-void FolderifyLeaf(string qualfiedPath) {
-    path p(qualfiedPath);
+void FolderifyLeaf(std::string qualfiedPath) {
+  path p(qualfiedPath);
 
     try {
         if(exists(p)) {
@@ -175,7 +175,7 @@ void FolderifyLeaf(string qualfiedPath) {
                 // TODO - Handle case where folder exists with
                 // Name from CheckSum output already (weird edge case)
                 // Never gunna happen, but should be handled eventually
-                string checkSum = CheckSum(qualfiedPath);
+                std::string checkSum = CheckSum(qualfiedPath);
 
                 // Get the parent path/dir from qualified path to file
                 path newFilePath = p.parent_path();
@@ -198,15 +198,15 @@ void FolderifyLeaf(string qualfiedPath) {
             }
             else {
                 // Use qualified path instead? Haven't tested p
-                cout << p << "exists, but is not a leaf file";
+                std::cout << p << "exists, but is not a leaf file";
             }
         }
         else {
-            cout << p << "Doesn't exist";
+            std::cout << p << "Doesn't exist";
         }
     }
     catch (const filesystem_error& ex) {
-            cout << ex.what() << endl;
+            std::cout << ex.what() << std::endl;
     }
 
     return;
