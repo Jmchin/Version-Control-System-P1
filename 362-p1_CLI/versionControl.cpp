@@ -59,22 +59,6 @@ int main() {
     return 0;
 }
 
-// recursively copies file-directory structure
-void DeepCopyDir(fs::path src, fs::path des) {
-
-  // TODO: Proper error handling and checks
-  if (!fs::exists(src) || !fs::is_directory(src)) {
-    exit(-1);
-  }
-
-  for (auto& file : fs::recursive_directory_iterator(src)) {
-    auto& file_path = file.path();
-    auto relative_path = file_path.string();
-    boost::replace_first(relative_path, src.string(), "");
-    fs::copy(file_path, des / relative_path);
-  }
-}
-
 void Create() {
     std::string source;
     std::string destination;
@@ -168,6 +152,30 @@ std::string CheckSum(std::string fileName) {
 
 }
 
+// recursively copies file-directory structure
+void DeepCopyDir(fs::path src, fs::path des) {
+
+  // TODO: Proper error handling and checks
+  if (!fs::exists(src) || !fs::is_directory(src)) {
+    exit(-1);
+  }
+
+  // hacky way to make sure we can continue, even if user didn't clean directory
+  if (fs::exists(des)) {
+    fs::remove_all(des);
+    fs::create_directory(des);
+  }
+  else {
+    fs::create_directory(des);
+  }
+
+  for (auto& file : fs::recursive_directory_iterator(src)) {
+    auto& file_path = file.path();
+    auto relative_path = file_path.string();
+    boost::replace_first(relative_path, src.string(), "");
+    fs::copy(file_path, des / relative_path);
+  }
+}
 
 // Convience method to format the filenames.
 // Pass in sum, count, and extension <e.g. '.txt'>
