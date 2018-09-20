@@ -71,20 +71,15 @@ void Create() {
     fs::path src(source.c_str());
     fs::path des(destination.c_str());
 
-    // copy the source directory
     DeepCopyDir(src, des);
 
-    // Does it all in directory po.
+    // folderify every leaf in the newly copied des directory
     for(fs::directory_entry& p: fs::recursive_directory_iterator(des)) {
       if(fs::is_regular_file(p.path())) {
-          std::cout << "folderifying: " << p.path().string() << std::endl;
+          // std::cout << "folderifying: " << p.path().string() << std::endl;
           FolderifyLeaf(p.path().string());
       }
     }
-
-    // ADD - Copy directory S into destination directory. Should literally be a call to
-    // Boost's copy_file or copy_directory or copy_path (or something)
-    // Look at my code/look into the path file type
 
 }
 
@@ -206,7 +201,7 @@ void FolderifyLeaf(std::string filePath) {
         // Never gunna happen, but should be handled eventually
         std::string checkSum = CheckSum(filePath);
 
-        // Get the parent path/dir from qualified path to file
+        // Get the parent path/dir from filePath
         fs::path newFilePath = p.parent_path();
         newFilePath += "/" + checkSum;
 
@@ -235,7 +230,11 @@ void FolderifyLeaf(std::string filePath) {
     }
   }
   catch (const fs::filesystem_error& ex) {
-    std::cout << ex.what() << std::endl;
+    // TODO: we don't actually need to handle this error do we?
+    //       this is the behavior we want, unless there's some
+    //       unforeseen consequences
+
+    // std::cout << ex.what() << std::endl;
   }
 
   return;
