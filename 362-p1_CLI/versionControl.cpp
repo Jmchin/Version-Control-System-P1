@@ -2,11 +2,10 @@
 // Authors:
 //     Kevin Molina-Heineck - kevin.molina@csu.fullerton.edu
 //     Justin Chin - jmchin@csu.fullerton.edu
-//     @@Add your names here@@
-//     @@@@@@@@@@@@@@@@@@@@@@@
 //
 // Description:
-//     TODO
+// Creates a repository storing artifactIDs for every
+// non-directory file in a given project tree
 
 #include <iostream>
 #include <fstream>
