@@ -43,5 +43,5 @@ artifactID for that specific file.
   the existing file directory structure
 
 * Creates a new directory for every non-directory file in the original
-  * project tree Stores artifacts in these new folders, named by the weighted checksum of the file's contents, as well as its size in bytes
+  * project tree stores artifacts in these new folders, named by the weighted checksum of the file's contents, as well as its size in bytes
     * e.g "6648-L11.txt"
