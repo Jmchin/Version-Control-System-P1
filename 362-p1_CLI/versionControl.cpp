@@ -3,7 +3,7 @@
 //     Kevin Molina-Heineck - kevin.molina@csu.fullerton.edu
 //     Justin Chin - jmchin@csu.fullerton.edu
 //     James Paul Mabe - jamespmabe@csu.fullerton.edu
-//     
+//     Alex Lavrov - alavrov@csu.fullerton.edu
 //     
 //
 // Description:
