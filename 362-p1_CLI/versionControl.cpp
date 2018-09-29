@@ -2,10 +2,12 @@
 // Authors:
 //     Kevin Molina-Heineck - kevin.molina@csu.fullerton.edu
 //     Justin Chin - jmchin@csu.fullerton.edu
+//     James Paul Mabe - jamespmabe@csu.fullerton.edu
+//     @@Add your names here@@
+//     @@@@@@@@@@@@@@@@@@@@@@@
 //
 // Description:
-// Creates a repository storing artifactIDs for every
-// non-directory file in a given project tree
+//     TODO
 
 #include <iostream>
 #include <fstream>
@@ -19,7 +21,7 @@
 #define WEIGHT_THREE 7
 #define WEIGHT_FOUR 11
 #define WEIGHT_FIVE 17
-// #define INT_MAX 2147483647
+#define INT_MAX 2147483647
 
 namespace fs = boost::filesystem;
 
