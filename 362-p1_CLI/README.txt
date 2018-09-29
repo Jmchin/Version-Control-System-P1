@@ -45,3 +45,11 @@ artifactID for that specific file.
 * Creates a new directory for every non-directory file in the original
   * project tree stores artifacts in these new folders, named by the weighted checksum of the file's contents, as well as its size in bytes
     * e.g "6648-L11.txt"
+    
+### Member Contributions: ###
+
+* Kevin: Project Design, Create(), Boost implementation.
+* Justin: FolderifLeaf(), Readme, testing.
+* James: CheckSum(), testing.
+* Alex: DeepCopyDir(), FormatFileName()
+
