@@ -2,13 +2,14 @@
 #include <sstream>
 #include <ctime>
 #include <iomanip>
-#include <fsream>
+#include <fstream>
 #include <boost/filesystem.hpp>
 
 #include "manifest.h"
 
 namespace fs = boost::filesystem;
 
+/* Current localtime formatted YYYY-MM-DD|HH:MM:SS */
 std::string timestamp() {
 
   // get time object for the current localtime
