@@ -44,24 +44,14 @@ Manifest LabelManifest(Manifest m, std::string label) {
 
 }
 
-void WriteManifestToDisk(Manifest m) {
-  // get path of hidden file detailing latest manifest version (e.g ".441")
-  std::string cur_manifest;
-
-  // increment the filename read as an integer and rename
-  // TODO: implement logic to rename file by incrementing the integer portion of the name
-  try {
-
-    fs::rename(cur_manifest, "");
-
-
-  } catch (const fs::filesystem_error& ex) {
-    // TODO: implement actual error handling
-
-  }
-
+void PrintManifest(Manifest& m) {
+  std::cout << m.command << std::endl;
+  std::cout << m.timestamp << std::endl;
+  std::cout << m.user << std::endl;
+  PrintLabels(m);
 }
 
+/* Helper function to test LabelManifest */
 void PrintLabels(Manifest m) {
   for (auto label : m.labels) {
     std::cout << label << " ";
