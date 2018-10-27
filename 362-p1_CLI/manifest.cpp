@@ -30,8 +30,17 @@ std::string timestamp() {
    output: New manifest m' - a copy of :Manifest m with :String label appended
                              to the front of the LabelList
 
+   NOTE: The return type is Manifest, meaning that this function returns a new
+         Manifest object, seperate from the one passed in as argument. If you
+         want to label a Manifest, you will need to assign the result of this
+         function to some variable.
 */
 Manifest LabelManifest(Manifest m, std::string label) {
+  LabelList labels = m.labels;
+  labels.push_back(label);
+  Manifest manifest = { m.command, m.timestamp, m.user, labels, m.files };
+
+  return manifest;
 
 }
 
@@ -43,7 +52,7 @@ void WriteManifestToDisk(Manifest m) {
   // TODO: implement logic to rename file by incrementing the integer portion of the name
   try {
 
-  fs::rename(cur_manifest, "");
+    fs::rename(cur_manifest, "");
 
 
   } catch (const fs::filesystem_error& ex) {
@@ -53,10 +62,38 @@ void WriteManifestToDisk(Manifest m) {
 
 }
 
+void PrintLabels(Manifest m) {
+  for (auto label : m.labels) {
+    std::cout << label << " ";
+  }
+}
+
 
 int main() {
+  // test timestamp
   std::string ts = timestamp();
   std::cout << ts << std::endl;
+
+  LabelList labels;
+  labels.push_back("foo");
+
+  FileList files;
+
+  // test LabelManifest
+  Manifest manifest = { "create", timestamp(), "jc", labels, files };
+
+  std::cout << "Previous manifest labels: ";
+  PrintLabels(manifest);
+  std::cout << std::endl;
+
+  manifest = LabelManifest(manifest, "bar");
+  std::cout << "After labeling: ";
+  PrintLabels(manifest);
+  std::cout << std::endl;
+  // std::cout << "After labeling: " << PrintLabels(manifest) << std::endl;
+
+
+
 
   return 0;
 }
