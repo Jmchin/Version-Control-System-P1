@@ -4,7 +4,7 @@
 #include <vector>
 
 typedef std::vector<std::string> LabelList;
-typedef std::vector<std::vector<std::string> > FileList;  // [[filename1 artifact1 artifact2]]
+typedef std::vector<std::vector<std::string> > FileList;  // [[filename1, artifact1, artifact2]]
 
 struct Manifest {
   std::string command;
@@ -18,4 +18,5 @@ struct Manifest {
 std::string timestamp();
 Manifest LabelManifest(Manifest m, std::string label);
 void PrintLabels(Manifest m);
+void PrintManifest(Manifest m);
 void WriteManifestToDisk(Manifest m);
