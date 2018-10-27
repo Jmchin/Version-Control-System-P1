@@ -24,7 +24,7 @@ std::string timestamp() {
 
 }
 
-/* input: Manifest m - a manifest object to add label to
+/* input: Manifest m   - a manifest object to add label to
           String label - the label to append to m's LabelList
 
    output: New manifest m' - a copy of :Manifest m with :String label appended
