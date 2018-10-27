@@ -62,28 +62,38 @@ void PrintLabels(Manifest m) {
 int main() {
   // test timestamp
   std::string ts = timestamp();
-  std::cout << ts << std::endl;
+  std::cout << "Timestamp Test: " << ts << std::endl;
 
+
+  // test manifest object creation and display representation
   LabelList labels;
   labels.push_back("foo");
 
   FileList files;
 
-  // test LabelManifest
-  Manifest manifest = { "create", timestamp(), "jc", labels, files };
+  std::cout << "Creating manifest object..." << std::endl;
 
+  Manifest manifest = { "create", timestamp(), "jc", labels, files };
+  PrintManifest(manifest);
+
+  std::cout << std::endl << std::endl;
+
+  // test manifest labelling
   std::cout << "Previous manifest labels: ";
   PrintLabels(manifest);
   std::cout << std::endl;
 
+  std::cout << "Labeling manifest..." << std::endl;
+
   manifest = LabelManifest(manifest, "bar");
   std::cout << "After labeling: ";
   PrintLabels(manifest);
+  std::cout << std::endl << std::endl;
+
+  // show final representation of manifest after transformations
+  std::cout << "Manifest object after labelling:" << std::endl;
+  PrintManifest(manifest);
   std::cout << std::endl;
-  // std::cout << "After labeling: " << PrintLabels(manifest) << std::endl;
-
-
-
 
   return 0;
 }
