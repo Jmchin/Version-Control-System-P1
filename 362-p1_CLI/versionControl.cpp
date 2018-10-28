@@ -37,7 +37,6 @@ std::string FormatFileName(long long sum, int count, std::string extension);
 void FolderifyLeaf(std::string filePath);
 
 int main() {
-    bool f = true;
     char input;
 
     do {
