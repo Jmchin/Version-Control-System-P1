@@ -4,19 +4,21 @@
 //     Justin Chin - jmchin@csu.fullerton.edu
 //     James Paul Mabe - jamespmabe@csu.fullerton.edu
 //     Alex Lavrov - alavrov@csu.fullerton.edu
-//     
+//
 //
 // Description:
 // Creates a repository storing artifactIDs for every
 // non-directory file in a given project tree
 
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+
+#include "manifest.h"
 
 #define WEIGHT_ONE 1
 #define WEIGHT_TWO 3
