@@ -47,31 +47,40 @@ Manifest LabelManifest(const Manifest& m, std::string label) {
 
 }
 
-void PrintManifest(const Manifest& m) {
-  std::cout << m.command << std::endl;
-  std::cout << m.timestamp << std::endl;
-  std::cout << m.user << std::endl;
-  PrintLabels(m);
-  std::cout << std::endl;
-  PrintFiles(m);
+std::string ManifestToString(const Manifest& m) {
+  std::stringstream buf;
+  buf << m.command << "\n";
+  buf << m.timestamp << "\n";
+  buf << m.user << "\n";
+  buf << GetManifestLabels(m) << "\n";
+  buf << GetManifestFiles(m);
+
+  return buf.str();
+
 }
 
-/* Helper function to test LabelManifest */
-void PrintLabels(const Manifest& m) {
+std::string GetManifestLabels(const Manifest& m) {
+  std::stringstream buf;
+
   for (auto label : m.labels) {
-    std::cout << label << " ";
+    buf << label << " ";
   }
+
+  return buf.str();
+
 }
 
-void PrintFiles(const Manifest& m) {
-  for (auto lines : m.files) {
-    for (auto file_artifact : lines) {
-      std::cout << file_artifact << " ";
+std::string GetManifestFiles(const Manifest& m) {
+  std::stringstream buf;
 
+  for (auto lines: m.files) {
+    for (auto file_artifact : lines) {
+      buf << file_artifact << " ";
     }
-    std::cout << std::endl;
+    buf << "\n";
   }
 
+  return buf.str();
 }
 
 void WriteManifestToPath(const Manifest& m, std::string path) {
@@ -100,26 +109,17 @@ int main() {
   std::cout << "Creating manifest object..." << std::endl;
 
   Manifest manifest = { "create", timestamp(), "jc", *labels, *files };
-  PrintManifest(manifest);
-
-  std::cout << std::endl << std::endl;
+  std::cout << ManifestToString(manifest) << std::endl;
 
   // test manifest labelling
-  std::cout << "Previous manifest labels: ";
-  PrintLabels(manifest);
-  std::cout << std::endl;
-
   std::cout << "Labeling manifest..." << std::endl;
+  std::cout << std::endl;
 
   manifest = LabelManifest(manifest, "bar");
-  std::cout << "After labeling: ";
-  PrintLabels(manifest);
-  std::cout << std::endl << std::endl;
 
   // show final representation of manifest after transformations
-  std::cout << "Manifest object after labelling:" << std::endl;
-  PrintManifest(manifest);
-  std::cout << std::endl;
+  std::cout << "Manifest object after labeling:" << std::endl;
+  std::cout << ManifestToString(manifest) << std::endl;
 
   return 0;
 }
