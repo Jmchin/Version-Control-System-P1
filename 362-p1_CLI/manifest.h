@@ -16,8 +16,8 @@ struct Manifest {
 
 
 std::string timestamp();
-Manifest LabelManifest(Manifest m, std::string label);
-void PrintLabels(Manifest& m);
-void PrintFiles(Manifest& m);
-void PrintManifest(Manifest& m);
-void WriteManifestToPath(Manifest& m, std::string path);
+Manifest LabelManifest(const Manifest& m, std::string label);
+void PrintLabels(const Manifest& m);
+void PrintFiles(const Manifest& m);
+void PrintManifest(const Manifest& m);
+void WriteManifestToPath(const Manifest& m, std::string path);
