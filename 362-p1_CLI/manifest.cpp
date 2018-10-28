@@ -37,16 +37,17 @@ std::string timestamp() {
          want to label a Manifest, you will need to assign the result of this
          function to some variable.
 */
-Manifest LabelManifest(Manifest m, std::string label) {
+Manifest LabelManifest(const Manifest& m, std::string label) {
   LabelList labels = m.labels;
+  FileList files = m.files;
   labels.push_back(label);
-  Manifest manifest = { m.command, m.timestamp, m.user, labels, m.files };
+  Manifest manifest = { m.command, m.timestamp, m.user, labels, files };
 
   return manifest;
 
 }
 
-void PrintManifest(Manifest& m) {
+void PrintManifest(const Manifest& m) {
   std::cout << m.command << std::endl;
   std::cout << m.timestamp << std::endl;
   std::cout << m.user << std::endl;
@@ -56,13 +57,13 @@ void PrintManifest(Manifest& m) {
 }
 
 /* Helper function to test LabelManifest */
-void PrintLabels(Manifest& m) {
+void PrintLabels(const Manifest& m) {
   for (auto label : m.labels) {
     std::cout << label << " ";
   }
 }
 
-void PrintFiles(Manifest& m) {
+void PrintFiles(const Manifest& m) {
   for (auto lines : m.files) {
     for (auto file_artifact : lines) {
       std::cout << file_artifact << " ";
@@ -73,7 +74,7 @@ void PrintFiles(Manifest& m) {
 
 }
 
-void WriteManifestToPath(Manifest m, std::string path) {
+void WriteManifestToPath(const Manifest& m, std::string path) {
 
 }
 
@@ -83,20 +84,22 @@ int main() {
   std::cout << "Timestamp Test: " << ts << std::endl;
 
   // test manifest object creation and display representation
-  LabelList labels;
-  labels.push_back("foo");
+  LabelList* labels = new LabelList;
+  labels->push_back("foo");
 
-  FileList files;
+  FileList* files = new FileList;
   std::vector<std::string> file_artifact1;
+
+
   file_artifact1.push_back("foo.cpp");
   file_artifact1.push_back("13850.cpp");
 
-  files.push_back(file_artifact1);
+  files->push_back(file_artifact1);
 
 
   std::cout << "Creating manifest object..." << std::endl;
 
-  Manifest manifest = { "create", timestamp(), "jc", labels, files };
+  Manifest manifest = { "create", timestamp(), "jc", *labels, *files };
   PrintManifest(manifest);
 
   std::cout << std::endl << std::endl;
