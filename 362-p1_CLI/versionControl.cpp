@@ -17,6 +17,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <unistd.h>
 
 #include "manifest.h"
 
@@ -76,7 +77,17 @@ void Create() {
     fs::path src(source.c_str());
     fs::path des(destination.c_str());
 
+    char* username = getlogin();  // NOTE: Not portable, this assumes POSIX functions (i.e should
+                                  //       work on most unix systems)
+
     DeepCopyDir(src, des);
+
+    /* NOTE: No portable way to get the current USER as this is
+       platform-dependent. This assumes POSIX.
+    */
+
+    //TODO: create manifest file for this "create" command
+
 
     // folderify every leaf in the newly copied des directory
     for(fs::directory_entry& p: fs::recursive_directory_iterator(des)) {
