@@ -31,71 +31,75 @@
 namespace fs = boost::filesystem;
 
 std::string CheckSum(std::string fileName);
-void Create();
+void Create(std::string source, std::string destination);
 void DeepCopyDir(fs::path src, fs::path des);
 std::string FormatFileName(long long sum, int count, std::string extension);
 void FolderifyLeaf(std::string filePath);
 
-int main() {
-    bool f = true;
-    char input;
 
-    do {
-        std::cout << "******** Team CLI's VCS System ********" << std::endl;
-        std::cout << std::endl;
-        std::cout << "The following commands are available:" << std::endl;
-        std::cout << std::endl;
-        std::cout << "C - Create a repository for the given project source tree" << std::endl;
-        std::cout << "and all its files, including their folder paths within the project" << std::endl;
-        std::cout << std::endl;
-        std::cout << "Q - Quit the program" << std::endl << std::endl;
+// TODO: Generalize this
+// void printUsage() {
+//   std::cerr << "Usage: "
+//             << "vcs"
+//             << " -c"
+//             << " <source directory>"
+//             << " <target directory>"
+//             << std::endl;
+// }
 
-        std::cin >> input;
 
-        switch(toupper(input)){
-            case 'C':
-                Create();
-                break;
-            default:
-                break;
-        }
+// TODO: Implement actual error handling and argument requirements
+int main(int argc, char* argv[]) {
 
-    } while (toupper(input) != 'Q');
+  for (int i = 1; i < argc; ++i) {
+    std::string arg = argv[i];
 
-    return 0;
+    if(arg == "-h" || arg == "--help") {
+      std::cout << "Help not implemented." << std::endl;
+    }
+
+    else if(arg == "-c" || arg == "--create") {
+      if (argc < 4) {
+        std::cerr << "Invalid number of arguments for create repo." << std::endl;
+        return -1;
+      }
+
+      std::string source = argv[2];
+      std::string destination = argv[3];
+
+      Create(source, destination);
+
+    }
+
+    else if(arg == "-i" || arg == "--check-in") {
+      std::cout << "Not implemented." << std::endl;
+    }
+
+    else if(arg == "-o" || arg == "--check-out") {
+      std::cout << "Not implemented." << std::endl;
+    }
+  }
+  return 0;
 }
 
-void Create() {
-    std::string source;
-    std::string destination;
+void Create(std::string source, std::string destination) {
 
-    std::cout << "Enter source folder path: ";
-    std::cin >> source;
-    std::cout << "Enter destination folder path: ";
-    std::cin >> destination;
+  fs::path src(source);
+  fs::path des(destination);
 
-    fs::path src(source.c_str());
-    fs::path des(destination.c_str());
+  // make a copy of the source directory
+  DeepCopyDir(src, des);
 
-    char* username = getlogin();  // NOTE: Not portable, this assumes POSIX functions (i.e should
-                                  //       work on most unix systems)
-
-    DeepCopyDir(src, des);
-
-    /* NOTE: No portable way to get the current USER as this is
-       platform-dependent. This assumes POSIX.
-    */
-
-    //TODO: create manifest file for this "create" command
-
-
-    // folderify every leaf in the newly copied des directory
-    for(fs::directory_entry& p: fs::recursive_directory_iterator(des)) {
-      if(fs::is_regular_file(p.path())) {
-          // std::cout << "folderifying: " << p.path().string() << std::endl;
-          FolderifyLeaf(p.path().string());
-      }
+  // folderify every leaf in the newly copied repo directory
+  for(fs::directory_entry& p: fs::recursive_directory_iterator(des)) {
+    if(fs::is_regular_file(p.path())) {
+      FolderifyLeaf(p.path().string());
     }
+  }
+
+  char* username = getlogin();  // NOTE: Not portable, this assumes POSIX functions
+
+// TODO: Build a manifest object, call WriteManifestToPath
 
 }
 
@@ -222,7 +226,6 @@ void FolderifyLeaf(std::string filePath) {
         newFilePath += "/" + checkSum;
 
         // Rename file with checksum
-        // Check for rename funct in boost
         fs::copy_file(p, newFilePath);
         remove(p);
         fs::create_directory(p);
