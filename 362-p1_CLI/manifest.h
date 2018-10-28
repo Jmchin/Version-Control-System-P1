@@ -10,8 +10,8 @@ struct Manifest {
   std::string command;
   std::string timestamp;
   std::string user;
-  LabelList* labels = new LabelList;
-  FileList* files = new FileList;
+  LabelList labels;
+  FileList files;
 };
 
 
