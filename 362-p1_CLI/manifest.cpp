@@ -3,6 +3,8 @@
 #include <ctime>
 #include <iomanip>
 #include <fstream>
+#include <vector>
+#include <string>
 #include <boost/filesystem.hpp>
 
 #include "manifest.h"
@@ -49,27 +51,48 @@ void PrintManifest(Manifest& m) {
   std::cout << m.timestamp << std::endl;
   std::cout << m.user << std::endl;
   PrintLabels(m);
+  std::cout << std::endl;
+  PrintFiles(m);
 }
 
 /* Helper function to test LabelManifest */
-void PrintLabels(Manifest m) {
+void PrintLabels(Manifest& m) {
   for (auto label : m.labels) {
     std::cout << label << " ";
   }
 }
 
+void PrintFiles(Manifest& m) {
+  for (auto lines : m.files) {
+    for (auto file_artifact : lines) {
+      std::cout << file_artifact << " ";
+
+    }
+    std::cout << std::endl;
+  }
+
+}
+
+void WriteManifestToPath(Manifest m, std::string path) {
+
+}
 
 int main() {
   // test timestamp
   std::string ts = timestamp();
   std::cout << "Timestamp Test: " << ts << std::endl;
 
-
   // test manifest object creation and display representation
   LabelList labels;
   labels.push_back("foo");
 
   FileList files;
+  std::vector<std::string> file_artifact1;
+  file_artifact1.push_back("foo.cpp");
+  file_artifact1.push_back("13850.cpp");
+
+  files.push_back(file_artifact1);
+
 
   std::cout << "Creating manifest object..." << std::endl;
 
