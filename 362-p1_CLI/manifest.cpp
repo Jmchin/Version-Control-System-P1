@@ -85,6 +85,11 @@ std::string GetManifestFiles(const Manifest& m) {
 
 void WriteManifestToPath(const Manifest& m, std::string path) {
 
+  std::ofstream file;
+  file.open(path);
+
+  file << ManifestToString(m);
+
 }
 
 int main() {
@@ -120,6 +125,8 @@ int main() {
   // show final representation of manifest after transformations
   std::cout << "Manifest object after labeling:" << std::endl;
   std::cout << ManifestToString(manifest) << std::endl;
+
+  WriteManifestToPath(manifest, "MANIFEST");
 
   return 0;
 }
