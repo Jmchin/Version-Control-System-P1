@@ -83,7 +83,19 @@ std::string GetManifestFiles(const Manifest& m) {
   return buf.str();
 }
 
+
+/*
+   Converts a manifest object into a string, which is written to the file specified
+   by the path argument.
+*/
 void WriteManifestToPath(const Manifest& m, std::string path) {
+
+  std::ofstream file;
+  file.open(path);
+
+  file << ManifestToString(m);
+
+  file.close();
 
 }
 
@@ -120,6 +132,8 @@ int main() {
   // show final representation of manifest after transformations
   std::cout << "Manifest object after labeling:" << std::endl;
   std::cout << ManifestToString(manifest) << std::endl;
+
+  WriteManifestToPath(manifest, "MANIFEST");
 
   return 0;
 }
