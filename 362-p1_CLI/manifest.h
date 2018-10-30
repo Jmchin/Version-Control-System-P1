@@ -10,7 +10,7 @@ struct Manifest {
   std::string command;
   std::string timestamp;
   std::string user;
-  LabelList labels;
+  LabelList labels;     // TODO: Does the manifest actually need to store its label?
   FileList files;
 };
 
@@ -18,6 +18,6 @@ struct Manifest {
 std::string timestamp();
 Manifest LabelManifest(const Manifest& m, std::string label);
 std::string ManifestToString(const Manifest& m);
-std::string GetManifestLabels(const Manifest& m);
-std::string GetManifestFiles(const Manifest& m);
+std::string mLabelsToString(const Manifest& m);
+std::string mFilesToString(const Manifest& m);
 void WriteManifestToPath(const Manifest& m, std::string path);

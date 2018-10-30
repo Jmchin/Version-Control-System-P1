@@ -11,8 +11,7 @@
 
 namespace fs = boost::filesystem;
 
-
-/* input: Manifest m   - a manifest object to add label to
+/* input: Manifest& m   - a manifest object to add label to
           String label - the label to append to m's LabelList
 
    output: New manifest m' - a copy of :Manifest m with :String label appended
@@ -26,24 +25,28 @@ namespace fs = boost::filesystem;
 Manifest LabelManifest(const Manifest& m, std::string label) {
   LabelList labels = m.labels;
   FileList files = m.files;
+
   labels.push_back(label);
+
   Manifest manifest = { m.command, m.timestamp, m.user, labels, files };
 
   return manifest;
 
 }
 
-/*
-   Converts a manifest object into a string, which is written to the file specified
-   by the path argument.
+/* input: Manifest& m - the manifest object to write out
+          String path - the path to write the manifest object to
+
+   output: None
+
+   Side Effects: Writes the contents of Manifest m as a string to a file named
+                 by the path argument.
 */
 void WriteManifestToPath(const Manifest& m, std::string path) {
-
   std::ofstream file;
+
   file.open(path);
-
   file << ManifestToString(m);
-
   file.close();
 
 }
@@ -68,20 +71,19 @@ std::string timestamp() {
 
 }
 
-
 std::string ManifestToString(const Manifest& m) {
   std::stringstream buf;
   buf << m.command << "\n";
   buf << m.timestamp << "\n";
   buf << m.user << "\n";
-  buf << GetManifestLabels(m) << "\n";
-  buf << GetManifestFiles(m);
+  buf << mLabelsToString(m) << "\n";
+  buf << mFilesToString(m);
 
   return buf.str();
 
 }
 
-std::string GetManifestLabels(const Manifest& m) {
+std::string mLabelsToString(const Manifest& m) {
   std::stringstream buf;
 
   for (auto label : m.labels) {
@@ -92,7 +94,7 @@ std::string GetManifestLabels(const Manifest& m) {
 
 }
 
-std::string GetManifestFiles(const Manifest& m) {
+std::string mFilesToString(const Manifest& m) {
   std::stringstream buf;
 
   for (auto lines: m.files) {
@@ -104,10 +106,6 @@ std::string GetManifestFiles(const Manifest& m) {
 
   return buf.str();
 }
-
-
-
-
 
 int main() {
   // test timestamp
