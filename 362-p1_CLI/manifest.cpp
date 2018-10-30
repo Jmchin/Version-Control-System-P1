@@ -30,7 +30,7 @@ std::string timestamp() {
           String label - the label to append to m's LabelList
 
    output: New manifest m' - a copy of :Manifest m with :String label appended
-                             to the front of the LabelList
+                             to the tail of the LabelList
 
    NOTE: The return type is Manifest, meaning that this function returns a new
          Manifest object, seperate from the one passed in as argument. If you
