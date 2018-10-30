@@ -133,6 +133,8 @@ int main() {
   std::cout << "Manifest object after labeling:" << std::endl;
   std::cout << ManifestToString(manifest) << std::endl;
 
+
+  std::cout << "Writing manifest to disk..." << std::endl;
   WriteManifestToPath(manifest, "MANIFEST");
 
   return 0;

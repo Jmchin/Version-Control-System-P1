@@ -57,24 +57,20 @@ int main(int argc, char* argv[]) {
     if(arg == "-h" || arg == "--help") {
       std::cout << "Help not implemented." << std::endl;
     }
-
     else if(arg == "-c" || arg == "--create") {
       if (argc < 4) {
         std::cerr << "Invalid number of arguments for create repo." << std::endl;
         return -1;
       }
-
       std::string source = argv[2];
       std::string destination = argv[3];
 
       Create(source, destination);
 
     }
-
     else if(arg == "-i" || arg == "--check-in") {
       std::cout << "Not implemented." << std::endl;
     }
-
     else if(arg == "-o" || arg == "--check-out") {
       std::cout << "Not implemented." << std::endl;
     }
@@ -180,9 +176,8 @@ void DeepCopyDir(fs::path src, fs::path des) {
     fs::remove_all(des);
     fs::create_directory(des);
   }
-  else {
-    fs::create_directory(des);
-  }
+
+  fs::create_directory(des);
 
   for (auto& file : fs::recursive_directory_iterator(src)) {
     auto& file_path = file.path();
@@ -195,7 +190,6 @@ void DeepCopyDir(fs::path src, fs::path des) {
 // Convience method to format the filenames.
 // Pass in sum, count, and extension <e.g. '.txt'>
 std::string FormatFileName(long long sum, int count, std::string extension) {
-  std::string output;
   std::stringstream ss;
   ss << sum << "-L" << count << extension;
 
@@ -216,17 +210,12 @@ void FolderifyLeaf(std::string filePath) {
     if(fs::exists(p)) {
       // This is a leaf file!
       if(fs::is_regular_file(p)) {
-        // TODO - Handle case where folder exists with
-        // Name from CheckSum output already (weird edge case)
-        // Never gunna happen, but should be handled eventually
         std::string checkSum = CheckSum(filePath);
-
-        // Get the parent path/dir from filePath
-        fs::path newFilePath = p.parent_path();
+        fs::path newFilePath = p.parent_path();     // Get the parent path/dir from filePath
         newFilePath += "/" + checkSum;
 
-        // Rename file with checksum
-        fs::copy_file(p, newFilePath);
+
+        fs::copy_file(p, newFilePath);     // Rename file with checksum
         remove(p);
         fs::create_directory(p);
 
