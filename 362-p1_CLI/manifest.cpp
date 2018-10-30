@@ -11,20 +11,6 @@
 
 namespace fs = boost::filesystem;
 
-/* Current localtime formatted YYYY-MM-DD|HH:MM:SS */
-std::string timestamp() {
-
-  // get time object for the current localtime
-  std::time_t t = std::time(nullptr);
-  std::tm tm = *std::localtime(&t);
-
-  // put_time outputs to a stream, so use a stringstream here
-  std::stringstream buf;
-  buf << std::put_time(&tm, "%F|%T");
-
-  return buf.str();
-
-}
 
 /* input: Manifest m   - a manifest object to add label to
           String label - the label to append to m's LabelList
@@ -46,6 +32,42 @@ Manifest LabelManifest(const Manifest& m, std::string label) {
   return manifest;
 
 }
+
+/*
+   Converts a manifest object into a string, which is written to the file specified
+   by the path argument.
+*/
+void WriteManifestToPath(const Manifest& m, std::string path) {
+
+  std::ofstream file;
+  file.open(path);
+
+  file << ManifestToString(m);
+
+  file.close();
+
+}
+
+
+/* ============================================================================ */
+/*                              Auxililary Functions                            */
+/* ============================================================================ */
+
+/* Current localtime formatted YYYY-MM-DD|HH:MM:SS */
+std::string timestamp() {
+
+  // get time object for the current localtime
+  std::time_t t = std::time(nullptr);
+  std::tm tm = *std::localtime(&t);
+
+  // put_time outputs to a stream, so use a stringstream here
+  std::stringstream buf;
+  buf << std::put_time(&tm, "%F|%T");
+
+  return buf.str();
+
+}
+
 
 std::string ManifestToString(const Manifest& m) {
   std::stringstream buf;
@@ -84,20 +106,8 @@ std::string GetManifestFiles(const Manifest& m) {
 }
 
 
-/*
-   Converts a manifest object into a string, which is written to the file specified
-   by the path argument.
-*/
-void WriteManifestToPath(const Manifest& m, std::string path) {
 
-  std::ofstream file;
-  file.open(path);
 
-  file << ManifestToString(m);
-
-  file.close();
-
-}
 
 int main() {
   // test timestamp
