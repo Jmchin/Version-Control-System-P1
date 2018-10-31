@@ -7,7 +7,7 @@
   * Kevin Molina
   * Justin Chin
   * James Mabe
-  * Alex Lebrov
+  * Alex Lavrov
 
 ### Introduction: ###
 
