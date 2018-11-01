@@ -32,6 +32,7 @@ namespace fs = boost::filesystem;
 
 std::string CheckSum(std::string fileName);
 void Create(std::string source, std::string destination);
+void CheckIn(std::string source, std::string destination);
 void DeepCopyDir(fs::path src, fs::path des);
 std::string FormatFileName(long long sum, int count, std::string extension);
 void FolderifyLeaf(std::string filePath);
@@ -69,7 +70,16 @@ int main(int argc, char* argv[]) {
 
     }
     else if(arg == "-i" || arg == "--check-in") {
-      std::cout << "Not implemented." << std::endl;
+      std::string source = argv[2];
+      std::string destination = argv[3];
+
+      // Check project directory into a repository, adding new
+      // artifactIDs into the appropriate directories
+
+      // TODO: Create a Check-In manifest file
+      CheckIn(source, destination);
+      std::cout << "Checked-In project..." << std::endl;
+      // std::cout << "Not implemented." << std::endl;
     }
     else if(arg == "-o" || arg == "--check-out") {
       std::cout << "Not implemented." << std::endl;
@@ -172,12 +182,9 @@ void DeepCopyDir(fs::path src, fs::path des) {
   }
 
   // hacky way to make sure we can continue, even if user didn't clean directory
-  if (fs::exists(des)) {
-    fs::remove_all(des);
+  if (!fs::exists(des)) {
     fs::create_directory(des);
   }
-
-  fs::create_directory(des);
 
   for (auto& file : fs::recursive_directory_iterator(src)) {
     auto& file_path = file.path();
