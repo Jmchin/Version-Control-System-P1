@@ -109,6 +109,11 @@ void Create(std::string source, std::string destination) {
 
 }
 
+void CheckIn(std::string source, std::string destination) {
+  std::cout << "Not implemented" << std::endl;
+
+}
+
 // ****** CheckSum ******
 //
 // DESCRIPTION:
