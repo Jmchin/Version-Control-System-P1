@@ -19,8 +19,6 @@ struct Manifest {
 
 
 std::string timestamp();
-// Manifest LabelManifest(const Manifest& m, std::string label);
 std::string ManifestToString(const Manifest& m);
 void LogToManifest(std::string log, std::ofstream& manifest);
-// std::string mFilesToString(const Manifest& m);
 void WriteManifestToPath(const Manifest& m, std::string path);
