@@ -1,10 +1,13 @@
 #pragma once
 
-#include <string>
+#include <iostream>
+#include <sstream>
+#include <ctime>
+#include <iomanip>
 #include <fstream>
 #include <vector>
-
-typedef std::vector<std::string> FileList;  // [[filename1, artifact1, artifact2]]
+#include <string>
+#include <boost/filesystem.hpp>
 
 // TODO: Store the arguments used to operate the command (e.g Check-In
 // with project2/ as the source directory and repo2/ as the target
@@ -14,7 +17,6 @@ struct Manifest {
   std::string command;
   std::string timestamp;
   std::string user;
-  FileList files;
 };
 
 
