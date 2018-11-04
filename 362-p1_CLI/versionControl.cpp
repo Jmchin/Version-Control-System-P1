@@ -33,7 +33,9 @@ namespace fs = boost::filesystem;
 std::string CheckSum(std::string fileName);
 void Create(std::string source, std::string destination);
 void CheckIn(std::string source, std::string destination);
+void CheckOut(std::string manifest, std::string destination);
 void DeepCopyDir(fs::path src, fs::path des);
+std::string GetArguments(int argc, char* argv[]);
 std::string FormatFileName(long long sum, int count, std::string extension);
 void FolderifyLeaf(std::string filePath);
 
@@ -78,14 +80,23 @@ int main(int argc, char* argv[]) {
 
       // TODO: Create a Check-In manifest file
       CheckIn(source, destination);
-      std::cout << "Checked-In project..." << std::endl;
-      // std::cout << "Not implemented." << std::endl;
     }
     else if(arg == "-o" || arg == "--check-out") {
-      std::cout << "Not implemented." << std::endl;
+      std::string manifest = argv[2];
+      std::string destination = argv[3];
+
+      CheckOut(manifest, destination);
     }
   }
   return 0;
+}
+
+std::string GetArguments(int argc, char* argv[]) {
+  std::stringstream buf;
+  for (int i = 0; i < argc; ++i) {
+    buf << argv[i] << " ";
+  }
+  return buf.str();
 }
 
 void Create(std::string source, std::string destination) {
@@ -110,6 +121,11 @@ void Create(std::string source, std::string destination) {
 }
 
 void CheckIn(std::string source, std::string destination) {
+  std::cout << "Not implemented" << std::endl;
+
+}
+
+void CheckOut(std::string manifest, std::string destination) {
   std::cout << "Not implemented" << std::endl;
 
 }
