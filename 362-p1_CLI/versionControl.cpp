@@ -14,52 +14,65 @@
 #include "util.h"
 #include "repo.h"
 
+using namespace std;
+
+void PrintUsage() {
+  cout << "Usage: cli_vcs command <arguments>" << endl;
+  cout << "\t cli_vcs create <project> <repository>" << endl;
+  cout << "\t cli_vcs checkin <project> <repository>" << endl;
+  cout << "\t cli_vcs checkout <manifest> <directory>" << endl;
+  cout << "\t cli_vcs label <manifest> <label>" << endl;
+}
+
 // TODO: Implement actual error handling and argument requirements
 int main(int argc, char* argv[]) {
 
-  for (int i = 1; i < argc; ++i) {
-    std::string arg = argv[i];
+  if (argc < 4) {
+    PrintUsage();
+    return 1;
+  }
 
-    // REFACTOR
-    if(arg == "-h" || arg == "--help") {
-      std::cout << "Help not implemented." << std::endl;
+  string command = argv[1];
+
+  // REFACTOR
+  if(command == "create") {
+    if (argc < 4) {
+      cerr << "Invalid number of arguments for create repo." << endl;
+      return -1;
     }
-    else if(arg == "-c" || arg == "--create") {
-      if (argc < 4) {
-        std::cerr << "Invalid number of arguments for create repo." << std::endl;
-        return -1;
-      }
-      std::string source = argv[2];
-      std::string destination = argv[3];
+    string source = argv[2];
+    string destination = argv[3];
 
-      // create the initial manifest file
-      std::ofstream manifest("MANIFEST");
-      std::string commands = GetArguments(argc, argv);
-      char* username = getlogin();
+    // create the initial manifest file
+    ofstream manifest("MANIFEST");
+    string commands = GetArguments(argc, argv);
+    char* username = getlogin();
 
-      // TODO: Bundle this together to InitializeManifest()
-      LogToManifest(commands, manifest);
-      LogToManifest(timestamp(), manifest);
-      LogToManifest(username, manifest);
+    // TODO: Bundle this together to InitializeManifest()?
+    LogToManifest(commands, manifest);
+    LogToManifest(timestamp(), manifest);
+    LogToManifest(username, manifest);
 
-      // TODO: Do we need to pass the manifest file stream to create?
-      Create(source, destination);
+    // TODO: Do we need to pass the manifest file stream to create?
+    Create(source, destination);
 
-      manifest.close();
+    manifest.close();
 
-    }
-    else if(arg == "-i" || arg == "--check-in") {
-      std::string source = argv[2];
-      std::string destination = argv[3];
+  }
+  else if(command == "checkin") {
+    string source = argv[2];
+    string destination = argv[3];
 
-      CheckIn(source, destination);
-    }
-    else if(arg == "-o" || arg == "--check-out") {
-      std::string manifest = argv[2];
-      std::string destination = argv[3];
+    CheckIn(source, destination);
+  }
+  else if(command == "checkout") {
+    string manifest = argv[2];
+    string destination = argv[3];
 
-      CheckOut(manifest, destination);
-    }
+    CheckOut(manifest, destination);
+  }
+  else {
+    PrintUsage();
   }
   return 0;
 }
