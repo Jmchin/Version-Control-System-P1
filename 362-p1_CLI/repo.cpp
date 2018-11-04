@@ -11,6 +11,7 @@ void Create(std::string source, std::string destination) {
   // folderify every leaf in the newly copied repo directory
   for(fs::directory_entry& p: fs::recursive_directory_iterator(des)) {
     if(fs::is_regular_file(p.path())) {
+
       FolderifyLeaf(p.path().string());
 
       // TODO: log these operations to the manifest file somehow
