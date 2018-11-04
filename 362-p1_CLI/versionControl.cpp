@@ -27,7 +27,7 @@ void PrintUsage() {
 // TODO: Implement actual error handling and argument requirements
 int main(int argc, char* argv[]) {
 
-  if (argc < 4) {
+  if (argc < 2) {
     PrintUsage();
     return 1;
   }
