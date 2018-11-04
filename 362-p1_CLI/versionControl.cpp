@@ -68,7 +68,14 @@ int main(int argc, char* argv[]) {
       std::string source = argv[2];
       std::string destination = argv[3];
 
+      // create the initial manifest file
+      std::ofstream manifest("MANIFEST");
+      std::string commands = GetArguments(argc, argv);
+      LogToManifest(commands, manifest);
+
       Create(source, destination);
+
+      manifest.close();
 
     }
     else if(arg == "-i" || arg == "--check-in") {
@@ -113,8 +120,6 @@ void Create(std::string source, std::string destination) {
       FolderifyLeaf(p.path().string());
     }
   }
-
-  char* username = getlogin();  // NOTE: Not portable, this assumes POSIX functions
 
 // TODO: Build a manifest object, call WriteManifestToPath
 
