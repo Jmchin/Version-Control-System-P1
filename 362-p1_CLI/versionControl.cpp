@@ -17,7 +17,7 @@
 using namespace std;
 
 void PrintUsage() {
-  cout << "Usage: cli_vcs command <arguments>" << endl;
+  cout << "Usage: cli_vcs command [<arguments>...]" << endl;
   cout << "\t cli_vcs create <project> <repository>" << endl;
   cout << "\t cli_vcs checkin <project> <repository>" << endl;
   cout << "\t cli_vcs checkout <manifest> <directory>" << endl;
@@ -36,22 +36,22 @@ int main(int argc, char* argv[]) {
 
   // REFACTOR
   if(command == "create") {
+
     if (argc < 4) {
       cerr << "Invalid number of arguments for create repo." << endl;
       return -1;
     }
+
     string source = argv[2];
     string destination = argv[3];
 
     // create the initial manifest file
     ofstream manifest("MANIFEST");
     string commands = GetArguments(argc, argv);
-    char* username = getlogin();
 
     // TODO: Bundle this together to InitializeManifest()?
     LogToManifest(commands, manifest);
     LogToManifest(timestamp(), manifest);
-    LogToManifest(username, manifest);
 
     // TODO: Do we need to pass the manifest file stream to create?
     Create(source, destination);
