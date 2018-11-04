@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
   // REFACTOR
   if(command == "create") {
 
-    if (argc < 4) {
+    if (argc != 4) {
       cerr << "Invalid number of arguments for create repo." << endl;
       return -1;
     }
