@@ -19,8 +19,11 @@ void Create(std::string source, std::string destination, std::string commands) {
 
   RepoifyDirectory(src_root, des_root, manifest);
 
+  InitLabels(destination);
+
   manifest.close();
 }
+
 void CheckIn(std::string source, std::string destination, std::string commands) {
   fs::path src_root(source);
   fs::path des_root(destination);
@@ -34,12 +37,14 @@ void CheckIn(std::string source, std::string destination, std::string commands) 
   LogToManifest(commands, manifest);
   LogToManifest(timestamp(), manifest);
 
+  update_version(destination);
+
   RepoifyDirectory(src_root, des_root, manifest);
 
   manifest.close();
 }
 
-void CheckOut(std::string manifest, std::string destination, std::string commands) {
+void CheckOut(std::string source, std::string manifest, std::string destination, std::string commands) {
   std::cout << "Not implemented" << std::endl;
 
 }
@@ -69,4 +74,13 @@ void RepoifyDirectory(fs::path src_root, fs::path des_root, std::ofstream& manif
 
     }
   }
+}
+
+void InitLabels(std::string destination) {
+  fs::path repo_root(destination);
+  fs::path file_name("labels.txt");
+  fs::path fullpath(repo_root / file_name);
+
+  std::ofstream labels (fullpath.string());
+  labels.close();
 }
