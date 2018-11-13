@@ -21,3 +21,4 @@ void DeepCopyDir(fs::path src, fs::path des);
 void FolderifyLeaf(std::string filePath);
 std::string FormatFileName(long long sum, int count, std::string extension);
 std::string GetArguments(int argc, char* argv[]);
+void update_version(std::string repo_root);
