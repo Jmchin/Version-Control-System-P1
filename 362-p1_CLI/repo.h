@@ -4,4 +4,5 @@
 
 void Create(std::string source, std::string destination, std::string commands);
 void CheckIn(std::string source, std::string destination, std::string commands);
-void CheckOut(std::string manifest, std::string destination);
+void CheckOut(std::string manifest, std::string destination, std::string commands);
+void RepoifyDirectory(fs::path src_root, fs::path des_root, std::ofstream& manifest);

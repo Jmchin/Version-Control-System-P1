@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
     string destination = argv[3];
     string commands = GetArguments(argc, argv);
 
-    CheckOut(manifest, destination);
+    CheckOut(manifest, destination, commands);
   }
   else {
     PrintUsage();
