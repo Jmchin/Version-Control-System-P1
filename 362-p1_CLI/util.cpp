@@ -97,46 +97,57 @@ void DeepCopyDir(fs::path src, fs::path des) {
 void FolderifyLeaf(std::string filePath) {
   fs::path p(filePath);
 
-  try {
-    if(fs::exists(p)) {
-      // This is a leaf file!
-      if(fs::is_regular_file(p)) {
-        std::string checkSum = CheckSum(filePath);
-        fs::path newFilePath = p.parent_path();     // Get the parent path/dir from filePath
-        newFilePath += "/" + checkSum;
+  // TODO: fix this entire function to work with paths properly
+  fs::path parent = fs::current_path();
+  fs::path current = fs::canonical(p);
+  fs::path relative = fs::relative(current, parent);
+  // fs::path dest = fs::system_complete("repo");
+
+  // std::cout << "parent: "<< parent << std::endl;
+  // std::cout << "current: "<< current << std::endl;
+  // std::cout << "relative: "<<  relative << std::endl;
+  // std::cout << "destination: " << dest << std::endl;
+
+  // try {
+  //   if(fs::exists(p)) {
+  //     // This is a leaf file!
+  //     if(fs::is_regular_file(p)) {
+  //       std::string checkSum = CheckSum(filePath);
+  //       fs::path newFilePath = p.parent_path();     // Get the parent path/dir from filePath
+  //       newFilePath += "/" + checkSum;
 
 
-        fs::copy_file(p, newFilePath);     // Rename file with checksum
-        remove(p);
-        fs::create_directory(p);
+  //       fs::copy_file(p, newFilePath);     // Rename file with checksum
+  //       remove(p);
+  //       fs::create_directory(p);
 
-        fs::path finalDest = p.string() + "/" + checkSum;
-        fs::copy_file(newFilePath, finalDest);
-        fs::remove(newFilePath);
-        // Append / + filename to new path (Hacky)
-        // Dont need?
-        //newFilePath += "/" + p.filename().string();
-        // TODO - Remove old file
+  //       fs::path finalDest = p.string() + "/" + checkSum;
+  //       fs::copy_file(newFilePath, finalDest);
+  //       fs::remove(newFilePath);
+  //       // Append / + filename to new path (Hacky)
+  //       // Dont need?
+  //       //newFilePath += "/" + p.filename().string();
+  //       // TODO - Remove old file
 
-      }
-      else {
-        // Use qualified path instead? Haven't tested p
-        std::cout << p << "exists, but is not a leaf file";
-      }
-    }
-    else {
-      std::cout << p << "Doesn't exist";
-    }
-  }
-  catch (const fs::filesystem_error& ex) {
-    // TODO: we don't actually need to handle this error do we?
-    //       this is the behavior we want, unless there's some
-    //       unforeseen consequences
+  //     }
+  //     else {
+  //       // Use qualified path instead? Haven't tested p
+  //       std::cout << p << "exists, but is not a leaf file";
+  //     }
+  //   }
+  //   else {
+  //     std::cout << p << "Doesn't exist";
+  //   }
+  // }
+  // catch (const fs::filesystem_error& ex) {
+  //   // TODO: we don't actually need to handle this error do we?
+  //   //       this is the behavior we want, unless there's some
+  //   //       unforeseen consequences
 
-    // std::cout << ex.what() << std::endl;
-  }
+  //   // std::cout << ex.what() << std::endl;
+  // }
 
-  return;
+  // return;
 }
 
 

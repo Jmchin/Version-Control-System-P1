@@ -16,6 +16,9 @@
 
 using namespace std;
 
+// the current working directory where program starts
+// #define PATH_PREFIX fs::initial_path()
+
 void PrintUsage() {
   cout << "Usage: cli_vcs command [<arguments>...]" << endl;
   cout << "\t cli_vcs create <project> <repository>" << endl;
@@ -44,30 +47,24 @@ int main(int argc, char* argv[]) {
 
     string source = argv[2];
     string destination = argv[3];
-
-    // create the initial manifest file
-    ofstream manifest("MANIFEST");
     string commands = GetArguments(argc, argv);
 
-    // TODO: Bundle this together to InitializeManifest()?
-    LogToManifest(commands, manifest);
-    LogToManifest(timestamp(), manifest);
-
     // TODO: Do we need to pass the manifest file stream to create?
-    Create(source, destination);
+    Create(source, destination, commands);
 
-    manifest.close();
 
   }
   else if(command == "checkin") {
     string source = argv[2];
     string destination = argv[3];
+    string commands = GetArguments(argc, argv);
 
-    CheckIn(source, destination);
+    CheckIn(source, destination, commands);
   }
   else if(command == "checkout") {
     string manifest = argv[2];
     string destination = argv[3];
+    string commands = GetArguments(argc, argv);
 
     CheckOut(manifest, destination);
   }
