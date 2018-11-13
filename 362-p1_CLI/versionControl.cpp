@@ -62,11 +62,12 @@ int main(int argc, char* argv[]) {
     CheckIn(source, destination, commands);
   }
   else if(command == "checkout") {
-    string manifest = argv[2];
+    string source = argv[2];
     string destination = argv[3];
+    string manifest = argv[4];
     string commands = GetArguments(argc, argv);
 
-    CheckOut(manifest, destination, commands);
+    CheckOut(source, destination, manifest, commands);
   }
   else {
     PrintUsage();
