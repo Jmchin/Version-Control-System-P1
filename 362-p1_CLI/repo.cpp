@@ -1,7 +1,9 @@
 #include "repo.h"
 #include "manifest.h"
+#include "creationOrder.h"
 
 // REFACTOR: all of this spagghetti
+// TODO: Add label support
 void Create(std::string source, std::string destination, std::string commands) {
 
   fs::path src_root(source);
@@ -11,7 +13,6 @@ void Create(std::string source, std::string destination, std::string commands) {
   fs::path mInit("1.manifest");
   fs::path m(des_root / mInit);
   std::ofstream manifest(m.string());
-
   LogToManifest(commands, manifest);
   LogToManifest(timestamp(), manifest);
 
@@ -24,29 +25,69 @@ void Create(std::string source, std::string destination, std::string commands) {
   manifest.close();
 }
 
+// TODO: Add label support
 void CheckIn(std::string source, std::string destination, std::string commands) {
   fs::path src_root(source);
   fs::path des_root(destination);
-  fs::path mInit("2.manifest");
-  fs::path m(des_root / mInit);
 
+  int latest_version = get_current_version(destination) + 1;
+  update_version(des_root.string());
 
-  // create the initial manifest file
+  std::stringstream manifest_file;
+  manifest_file << latest_version << ".manifest";
+  fs::path m_path(manifest_file.str());
+  fs::path m(des_root / m_path);
+
   std::ofstream manifest(m.string());
 
   LogToManifest(commands, manifest);
   LogToManifest(timestamp(), manifest);
-
-  update_version(destination);
 
   RepoifyDirectory(src_root, des_root, manifest);
 
   manifest.close();
 }
 
+// TODO: Add label support, log checked out files to the manifest
 void CheckOut(std::string source, std::string manifest, std::string destination, std::string commands) {
-  std::cout << "Not implemented" << std::endl;
+  fs::path src_root(source);
+  fs::path des_root(destination);
+  fs::path manifest_name(manifest);
+  fs::path manifest_path(src_root / manifest_name);
 
+  // write the new checkout manifest
+  int latest_version = get_current_version(source) + 1;
+  update_version(src_root.string());
+
+  std::stringstream new_manifest_name;
+  new_manifest_name << latest_version << ".manifest";
+  fs::path m_path(new_manifest_name.str());
+  fs::path m(src_root / m_path);
+  std::ofstream new_manifest(m.string());
+
+  LogToManifest(commands, new_manifest);
+  LogToManifest(timestamp(), new_manifest);
+
+  std::vector<CreationObject> creation_order = GetCreationOrder(manifest_path.string());
+
+  for (auto co : creation_order) {
+    if (co.isFolder) {
+      std::string proj_dest = co.destination;
+      boost::replace_first(proj_dest, source, destination);
+      fs::create_directories(proj_dest);
+    }
+    else {
+      std::string proj_dest = co.destination;
+      boost::replace_first(proj_dest, source, destination);
+
+      fs::remove(proj_dest);    /* lol this hack, needed because the prior steps
+                                   create the directory structure, but we can't
+                                   copy_file into an existing directory name
+                                   even if it is empty */
+
+      fs::copy_file(co.source, proj_dest);
+    }
+  }
 }
 
 void RepoifyDirectory(fs::path src_root, fs::path des_root, std::ofstream& manifest) {
@@ -60,7 +101,7 @@ void RepoifyDirectory(fs::path src_root, fs::path des_root, std::ofstream& manif
       // REFACTOR: CheckSum should take path instead of string
       fs::path checksum(CheckSum(src_path_string));
 
-      // build repo path for the file
+      // REFACTOR: build repo path for the file
       fs::path repo_path(src_path_string);
       std::string repo_string = repo_path.string();
       boost::replace_first(repo_string, src_root.string(), des_root.string());
@@ -78,7 +119,7 @@ void RepoifyDirectory(fs::path src_root, fs::path des_root, std::ofstream& manif
 
 void InitLabels(std::string destination) {
   fs::path repo_root(destination);
-  fs::path file_name("labels.txt");
+  fs::path file_name(".labels");
   fs::path fullpath(repo_root / file_name);
 
   std::ofstream labels (fullpath.string());

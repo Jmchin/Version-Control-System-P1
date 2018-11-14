@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include "util.h"
 
 void Create(std::string source, std::string destination, std::string commands);
