@@ -86,6 +86,22 @@ std::string GetArguments(int argc, char* argv[]) {
 }
 
 
+// Returns the current manifest version as an integer
+int get_current_version(std::string repo_root) {
+  int version;
+  std::fstream myFile;
+  fs::path dir(repo_root);
+  fs::path filename = ".latest_version.txt";
+  fs::path latest(dir / filename);
+
+  myFile.open(latest.string(), std::fstream::in);
+  if (myFile.is_open()) {
+    myFile >> version;
+  }
+  myFile.close();
+  return version;
+}
+
 
 void update_version(std::string repo_root) {
     int version_value;
@@ -97,7 +113,7 @@ void update_version(std::string repo_root) {
     // base case, checks to see if file exists, creates it if not and puts value 1.
     myFile.open(latest.string());
     if (!myFile) {
-        std::cout << "'.latest_version.txt' file created.\n Version: 1\n";
+        // std::cout << "'.latest_version.txt' file created.\n Version: 1\n";
         myFile.open(latest.string(), std::fstream::in | std::fstream::out | std::fstream::app);
         myFile << 1;
         return;
@@ -116,7 +132,7 @@ void update_version(std::string repo_root) {
     myFile.open(latest.string(), std::fstream::out | std::fstream::trunc);
         if (myFile.is_open()) {
             myFile << version_value;
-            std::cout << "Version: " << version_value << "\n";
+            // std::cout << "Version: " << version_value << "\n";
         }
     myFile.close();
 }

@@ -19,4 +19,5 @@ namespace fs = boost::filesystem;
 std::string CheckSum(std::string fileName);
 std::string FormatFileName(long long sum, int count, std::string extension);
 std::string GetArguments(int argc, char* argv[]);
+int get_current_version(std::string repo_root);
 void update_version(std::string repo_root);
