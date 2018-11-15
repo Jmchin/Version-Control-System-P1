@@ -66,6 +66,13 @@ int main(int argc, char* argv[]) {
 
     CheckOut(source, destination, manifest, commands);
   }
+  else if(command == "label") {
+    string repo = argv[2];
+    string manifest = argv[3];
+    string label = argv[4];
+
+    LabelManifest(repo, manifest, label);
+  }
   else {
     PrintUsage();
   }

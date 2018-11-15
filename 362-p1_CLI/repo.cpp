@@ -1,6 +1,7 @@
 #include "repo.h"
 #include "manifest.h"
 #include "creationOrder.h"
+#include "mapfile.h"
 
 // REFACTOR: all of this spagghetti
 // TODO: Add label support
@@ -124,4 +125,22 @@ void InitLabels(std::string destination) {
 
   std::ofstream labels (fullpath.string());
   labels.close();
+}
+
+void LabelManifest(std::string repo, std::string manifest, std::string label) {
+  // get manifest path
+  std::stringstream m_path;
+  m_path << repo << "/" << manifest;
+
+  // get labels path
+  std::stringstream l_path;
+  l_path << repo << "/" << ".labels";
+
+  // open labels file
+  std::ofstream l_file(l_path.str());
+
+  l_file << label << std::endl;
+  l_file << manifest << std::endl;
+
+  l_file.close();
 }
