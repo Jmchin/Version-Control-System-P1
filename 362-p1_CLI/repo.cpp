@@ -7,6 +7,7 @@
 // TODO: Add label support
 void Create(std::string source, std::string destination, std::string commands) {
 
+
   fs::path src_root(source);
   fs::path des_root(destination);
 
@@ -28,6 +29,8 @@ void Create(std::string source, std::string destination, std::string commands) {
 
 // TODO: Add label support
 void CheckIn(std::string source, std::string destination, std::string commands) {
+
+
   fs::path src_root(source);
   fs::path des_root(destination);
 
@@ -51,6 +54,9 @@ void CheckIn(std::string source, std::string destination, std::string commands) 
 
 // TODO: Add label support, log checked out files to the manifest
 void CheckOut(std::string source, std::string manifest, std::string destination, std::string commands) {
+
+  manifest = getAliasIfExists(manifest);
+
   fs::path src_root(source);
   fs::path des_root(destination);
   fs::path manifest_name(manifest);
@@ -79,6 +85,10 @@ void CheckOut(std::string source, std::string manifest, std::string destination,
     }
     else {
       std::string proj_dest = co.destination;
+
+      // add the file we took from the repo into the manifest
+      LogToManifest(proj_dest, new_manifest);
+
       boost::replace_first(proj_dest, source, destination);
 
       fs::remove(proj_dest);    /* lol this hack, needed because the prior steps
