@@ -52,7 +52,6 @@ void CheckIn(std::string source, std::string destination, std::string commands) 
   manifest.close();
 }
 
-// TODO: Add label support, log checked out files to the manifest
 void CheckOut(std::string source, std::string manifest, std::string destination, std::string commands) {
 
   manifest = getAliasIfExists(manifest);
