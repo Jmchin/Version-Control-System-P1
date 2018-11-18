@@ -23,8 +23,8 @@ void PrintUsage() {
   cout << "Usage: cli_vcs command [<arguments>...]" << endl;
   cout << "\t cli_vcs create <project> <repository>" << endl;
   cout << "\t cli_vcs checkin <project> <repository>" << endl;
-  cout << "\t cli_vcs checkout <manifest> <directory>" << endl;
-  cout << "\t cli_vcs label <manifest> <label>" << endl;
+  cout << "\t cli_vcs checkout <repository> <manifest> <directory>" << endl;
+  cout << "\t cli_vcs label <repository> <manifest> <label>" << endl;
 }
 
 // TODO: Implement actual error handling and argument requirements
