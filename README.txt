@@ -7,7 +7,7 @@
   * Kevin Molina
   * Justin Chin
   * James Mabe
-  * Alex Lebrov
+  * Alex Lavrov
 
 ### Introduction: ###
 
@@ -34,18 +34,28 @@ artifactID for that specific file.
 
 
 ### Usage: ###
-    - Run versionControl.cpp with ***g++ -std=c++11 versionControl.cpp -lboost_filesystem -lboost_system***
+    - Run versionControl.cpp with ***g++ -std=c++11 -o cli_vcs -lboost_filesystem -lboost_system manifest.cpp versionControl.cpp util.cpp repo.cpp creationOrder.cpp mapfile.cpp***
     - Run output with ***./a.out***
+    
 
 ### Features: ###
 
-* Given an existing project directory, creates a repository by copying
-  the existing file directory structure
-
-* Creates a new directory for every non-directory file in the original
-  * project tree stores artifacts in these new folders, named by the weighted checksum of the file's contents, as well as its size in bytes
-    * e.g "6648-L11.txt"
+* Creates a repository by copying the existing file directory structure given an existing project directory
+  * Creates a new directory for every non-directory file in the original
+  * project tree stores artifacts in these new folders, named by the weighted checksum of the file's contents, as well as its size in bytes, e.g "6648-L11.txt"
+    * Usage: cli_vcs create <project> <repository>
     
+* Allows the creation of labels to a manifest file to make it easier to track and use when issuing commands
+  * uniquely IDs a manifest under .labels, the program will then check said file when a user uses another command regarding manifests
+    * Usage: cli_vcs label <repo> <manifest> <label>
+    
+* Check-out a specific version of the project tree by providing a specific manifest
+  * Reads through the manifest and decides which specific versions of files should be applied
+    *Usage: cli_vcs checkin <project> <repository>
+    
+* Check-in a new version of the project by providing a filepath to a project
+  * Writes a new manifest related to the new version of the project
+    * Usage: cli_vcs checkout <repo> <manifest> <directory>
     
 ### Member Contributions: ###
 
