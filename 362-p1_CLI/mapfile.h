@@ -5,4 +5,4 @@
 #include <string>
 #include <sstream>
 
-std::string getAliasIfExists(std::string name);
+std::string getAliasIfExists(std::string name, std::string source);

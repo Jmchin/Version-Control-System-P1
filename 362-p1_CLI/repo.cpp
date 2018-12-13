@@ -54,7 +54,7 @@ void CheckIn(std::string source, std::string destination, std::string commands) 
 
 void CheckOut(std::string source, std::string manifest, std::string destination, std::string commands) {
 
-  manifest = getAliasIfExists(manifest);
+  manifest = getAliasIfExists(manifest, source);
 
   fs::path src_root(source);
   fs::path des_root(destination);

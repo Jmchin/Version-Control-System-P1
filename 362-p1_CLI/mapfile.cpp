@@ -4,14 +4,16 @@ using namespace std;
 
 namespace fs = boost::filesystem;
 
-string getAliasIfExists(string name) {
+/* returns a manifest given a label, if exists*/
+string getAliasIfExists(string name, string source) {
     ifstream myFile;
-    // todo: prefix repo_root
-
-    // FIX THIS: needs qualified path "cwd/repo/.labels"
-
     stringstream pathtolabel;
-    pathtolabel << fs::current_path().string() << "/" << "repo" << "/" << ".labels";
+
+    pathtolabel << fs::current_path().string()
+                << "/"
+                << source
+                << "/"
+                << ".labels";
 
     myFile.open(pathtolabel.str());
 
@@ -20,8 +22,6 @@ string getAliasIfExists(string name) {
     string value;
 
     while(!myFile.eof()) {
-
-      // std::cout << "LOOPING";
 
       getline(myFile, key);
       getline(myFile, value);
