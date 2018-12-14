@@ -100,6 +100,16 @@ void CheckOut(std::string source, std::string manifest, std::string destination,
   }
 }
 
+/* input: source   - path to the root of a repo
+          manifest - the manifest file (or label) specifying a version of the repo
+          target   - path to the root of a project directory
+
+   output: none
+ */
+void Merge(std::string source, std::string manifest, std::string target) {
+
+}
+
 void RepoifyDirectory(fs::path src_root, fs::path des_root, std::ofstream& manifest) {
 
   for(fs::directory_entry& p: fs::recursive_directory_iterator(src_root)) {
