@@ -113,10 +113,11 @@ void CheckOut(std::string source, std::string manifest, std::string destination,
     else {
       std::string proj_dest = co.destination;
 
+      boost::replace_first(proj_dest, source, destination);
+
       // add the file we took from the repo into the manifest
       LogToManifest(proj_dest, new_manifest);
 
-      boost::replace_first(proj_dest, source, destination);
 
       fs::remove(proj_dest);    /* lol this hack, needed because the prior steps
                                    create the directory structure, but we can't
