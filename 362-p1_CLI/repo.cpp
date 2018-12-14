@@ -128,6 +128,10 @@ void CheckOut(std::string source, std::string manifest, std::string destination,
   }
 }
 
+void Merge(std::string source, std::string manifest, std::string target) {
+
+}
+
 /**
     @param src_root - filesystem path to project directory
     @param des_root - filesystem path to target repo directory
