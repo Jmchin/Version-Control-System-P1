@@ -3,10 +3,16 @@
 #include "creationOrder.h"
 #include "mapfile.h"
 
-// REFACTOR: all of this spagghetti
-// TODO: Add label support
-void Create(std::string source, std::string destination, std::string commands) {
+/**
+   @param source - path to the project directory to create a repo from
+   @param destination - path to the repository directory to initialize
+   @param commands - the command line arguments to write to the manifest
 
+   @return - none
+
+   creates a version controlled repository from an initial project tree
+*/
+void Create(std::string source, std::string destination, std::string commands) {
 
   fs::path src_root(source);
   fs::path des_root(destination);
@@ -15,28 +21,41 @@ void Create(std::string source, std::string destination, std::string commands) {
   fs::path mInit("1.manifest");
   fs::path m(des_root / mInit);
   std::ofstream manifest(m.string());
+
+  // log the command line arguments to manifest
   LogToManifest(commands, manifest);
   LogToManifest(timestamp(), manifest);
 
+  // increment .latest_version
   update_version(destination);
 
   RepoifyDirectory(src_root, des_root, manifest);
 
+  // create the initial .labels file
   InitLabels(destination);
 
   manifest.close();
 }
 
-// TODO: Add label support
-void CheckIn(std::string source, std::string destination, std::string commands) {
+/**
+   @param source - path to the project directory to checkin from
+   @param destination - path to the repository directory to checkin to
+   @param commands - the command line arguments to write to the manifest
 
+   @return - none
+
+   checks-in a project tree into an existing repository
+*/
+void CheckIn(std::string source, std::string destination, std::string commands) {
 
   fs::path src_root(source);
   fs::path des_root(destination);
 
+  // increment .latest_version.txt
   int latest_version = get_current_version(destination) + 1;
   update_version(des_root.string());
 
+  // create checkin manifest
   std::stringstream manifest_file;
   manifest_file << latest_version << ".manifest";
   fs::path m_path(manifest_file.str());
@@ -52,8 +71,17 @@ void CheckIn(std::string source, std::string destination, std::string commands) 
   manifest.close();
 }
 
+/**
+    @param source - path to the source repository to checkout from
+    @param manifest - filename/label specifying the manifest file to checkout from
+    @param destination - path to the directory to checkout to
+    @param commands - the command line arguments to log to the new checkout manifest
+
+    @return - none
+*/
 void CheckOut(std::string source, std::string manifest, std::string destination, std::string commands) {
 
+  // get the manifest file if given a label
   manifest = getAliasIfExists(manifest, source);
 
   fs::path src_root(source);
@@ -61,10 +89,10 @@ void CheckOut(std::string source, std::string manifest, std::string destination,
   fs::path manifest_name(manifest);
   fs::path manifest_path(src_root / manifest_name);
 
-  // write the new checkout manifest
   int latest_version = get_current_version(source) + 1;
   update_version(src_root.string());
 
+  // write the new checkout manifest
   std::stringstream new_manifest_name;
   new_manifest_name << latest_version << ".manifest";
   fs::path m_path(new_manifest_name.str());
@@ -100,6 +128,13 @@ void CheckOut(std::string source, std::string manifest, std::string destination,
   }
 }
 
+/**
+    @param src_root - filesystem path to project directory
+    @param des_root - filesystem path to target repo directory
+    @param manifest - filestream to the manifest file for the operation
+
+    @return - none
+*/
 void RepoifyDirectory(fs::path src_root, fs::path des_root, std::ofstream& manifest) {
 
   for(fs::directory_entry& p: fs::recursive_directory_iterator(src_root)) {
@@ -127,27 +162,53 @@ void RepoifyDirectory(fs::path src_root, fs::path des_root, std::ofstream& manif
   }
 }
 
+/**
+    @param destination - path to root of a repo
+
+    @return none
+
+    initializes and writes an empty .labels file in the root of a repository
+*/
 void InitLabels(std::string destination) {
+
+  // convert destination to a boost fs::path
   fs::path repo_root(destination);
+
+  // the labels file
   fs::path file_name(".labels");
+
+  // fully qualified path to .labels
   fs::path fullpath(repo_root / file_name);
 
+  // create empty file at fullpath
   std::ofstream labels (fullpath.string());
   labels.close();
 }
 
+/**
+    @param repo     - path to root of a repo
+    @param manifest - filename/label specifying a version of the repo
+    @param label    - the label to add to a manifest
+
+    @return none
+
+    adds a label to a specific manifest file so that the manifest can be specified
+    using the label instead of the full filename
+
+*/
 void LabelManifest(std::string repo, std::string manifest, std::string label) {
-  // get manifest path
+  // build manifest path
   std::stringstream m_path;
   m_path << repo << "/" << manifest;
 
-  // get labels path
+  // build labels path
   std::stringstream l_path;
   l_path << repo << "/" << ".labels";
 
   // open labels file
   std::ofstream l_file(l_path.str());
 
+  // write label and associated manifest to .labels file
   l_file << label << std::endl;
   l_file << manifest << std::endl;
 
