@@ -128,6 +128,13 @@ void CheckOut(std::string source, std::string manifest, std::string destination,
   }
 }
 
+/**
+   @param source - the source repository
+   @param manifest - the manifest/label specifying the version of the repo
+   @param target - the project directory to merge into
+
+   @return - none
+ */
 void Merge(std::string source, std::string manifest, std::string target) {
 
 }
