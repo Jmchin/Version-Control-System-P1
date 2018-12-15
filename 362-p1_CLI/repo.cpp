@@ -145,23 +145,23 @@ void Merge(std::string source, std::string manifest, std::string target, std::st
   std::sstream mss;
   mss << get_current_version << ".manifest";
 
-  // compare artifactIDs from source_manifest and new target_manifest
+  // TODO: compare artifactIDs from source_manifest and new target_manifest
 
-  // if exists in source_manifest and not in target_manifest, copy file to target directory and LogToManifest
+  // TODO: if exists in source_manifest and not in target_manifest, copy file to target directory and LogToManifest
 
-  // if not in source_manifest, and exists in target_manifest, do nothing
+  // TODO: if not in source_manifest, and exists in target_manifest, do nothing
 
-  // if the same, do nothing
+  // TODO: if the same, do nothing
 
-  // if conflict:
+  // TODO: if conflict:
   std::vector<std::string> source_history = GetLinearHistory(manifest);
   std::vector<std::string> target_history = GetLinearHistory(mss.str());
 
-  // find rightmost intersection of the two histories, this is the common ancestor
+  // TODO: find rightmost intersection of the two histories, this is the common ancestor
 
-  // copy files from source and ancestor to target_directory  (e.g foo_MR.cpp, foo_MG.cpp)
+  // TODO: copy files from source and ancestor to target_directory  (e.g foo_MR.cpp, foo_MG.cpp)
 
-  // rename file in target_directory that was different (e.g foo_MT.cpp)
+  // TODO:rename file in target_directory that was different (e.g foo_MT.cpp)
 
 }
 

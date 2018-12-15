@@ -48,15 +48,15 @@ std::string GetParent(std::string manifest) {
   std::string line;
   std::getline(file, line);
 
-  // if checkin manifest, get the project directory name (i.e last argument)
+  //TODO: if checkin manifest, get the project directory name (i.e last argument)
   std::string child_proj_dir;
 
   child.close();
 
-  // get list of manifests less recent than the argument
+  //TODO: get list of manifests less recent than the argument
   std::vector<std::string> manifests;
 
-  // start from back of the list, find manifest direct parent
+  //TODO: start from back of the list, find manifest direct parent
   std::string parent_proj_dir;
 
   while (parent_proj_dir != child_proj_dir) {
@@ -67,7 +67,7 @@ std::string GetParent(std::string manifest) {
     std::string line;
     std::getline(parent, line);
 
-    // get parent_proj_dir from line
+    //TODO: get parent_proj_dir from line
 
     // close parent
     parent.close();
