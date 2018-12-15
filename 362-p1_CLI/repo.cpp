@@ -136,7 +136,32 @@ void CheckOut(std::string source, std::string manifest, std::string destination,
 
    @return - none
  */
-void Merge(std::string source, std::string manifest, std::string target) {
+void Merge(std::string source, std::string manifest, std::string target, std::string commands) {
+
+  // checkin the target directory to the repo so we have a manifest to work with
+  CheckIn(target, source, commands);
+
+  // get the most recent manifest file name
+  std::sstream mss;
+  mss << get_current_version << ".manifest";
+
+  // compare artifactIDs from source_manifest and new target_manifest
+
+  // if exists in source_manifest and not in target_manifest, copy file to target directory and LogToManifest
+
+  // if not in source_manifest, and exists in target_manifest, do nothing
+
+  // if the same, do nothing
+
+  // if conflict:
+  std::vector<std::string> source_history = GetLinearHistory(manifest);
+  std::vector<std::string> target_history = GetLinearHistory(mss.str());
+
+  // find rightmost intersection of the two histories, this is the common ancestor
+
+  // copy files from source and ancestor to target_directory  (e.g foo_MR.cpp, foo_MG.cpp)
+
+  // rename file in target_directory that was different (e.g foo_MT.cpp)
 
 }
 
