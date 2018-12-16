@@ -169,11 +169,12 @@ void Merge(std::string source, std::string manifest, std::string target, std::st
   std::stringstream target_manifest;
   target_manifest << cwd << "/" << source << "/" << get_current_version(source) << ".manifest";
 
-  // TODO: REMOVE
-  std::cout << "source manifest: " << source_manifest.str() << std::endl;
-  std::cout << "target manifest: " << target_manifest.str() << std::endl;
+  // get target and source history
+  std::vector<std::string> source_history = GetLinearHistory(source_manifest.str(), source);
+  std::vector<std::string> target_history = GetLinearHistory(target_manifest.str(), source);
 
   // TODO: compare artifactIDs from source_manifest and new target_manifest
+  std::cout << getCommonAncestor(source_history, target_history) << std::endl;
 
   // TODO: if exists in source_manifest and not in target_manifest, copy file to target directory and LogToManifest
 
@@ -182,23 +183,6 @@ void Merge(std::string source, std::string manifest, std::string target, std::st
   // TODO: if the same, do nothing
 
   // TODO: if conflict:
-  std::cout << "getting source history" << std::endl << std::endl;
-  std::vector<std::string> source_history = GetLinearHistory(source_manifest.str(), source);
-
-  std::cout << "getting target history" << std::endl << std::endl;
-  std::vector<std::string> target_history = GetLinearHistory(target_manifest.str(), source);
-
-  std::cout << "source history" << std::endl;
-  for (auto& s : source_history) {
-    std::cout << s << std::endl;
-  }
-
-  std::cout << "target_history" << std::endl;
-  for (auto& s : target_history) {
-    std::cout << s << std::endl;
-  }
-
-
 
   // TODO: find rightmost intersection of the two histories, this is the common ancestor
 

@@ -48,7 +48,6 @@ std::vector<std::string> GetLinearHistory(std::string manifest, std::string repo
   while (child != "1.manifest") {
 
     std::string parent = GetParent(childPath);
-    std::cout << "GETLINEARHISTORY parent: " << parent << std::endl;
     history.push_back(parent);
     childPath = parent;
 
@@ -61,7 +60,6 @@ std::vector<std::string> GetLinearHistory(std::string manifest, std::string repo
             child = childPath[i] + child;
         }
      }
-    std::cout << "GETLINEARHISTORY child:" << child << std::endl;
   }
 
   return history;
@@ -69,7 +67,6 @@ std::vector<std::string> GetLinearHistory(std::string manifest, std::string repo
 
 std::string GetParent(std::string manifest) {
   // open the manifest file
-  std::cout << "GETPARENT manifest name: " << manifest << std::endl;
   std::ifstream child(manifest);
 
   // get first line of manifest

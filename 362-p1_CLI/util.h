@@ -54,3 +54,4 @@ std::string GetArguments(int argc, char* argv[]);
 std::string getAliasIfExists(std::string name, std::string source);
 int get_current_version(std::string repo_root);
 void update_version(std::string repo_root);
+std::string getCommonAncestor(std::vector<std::string> source, std::vector<std::string> target);

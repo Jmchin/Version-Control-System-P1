@@ -268,3 +268,15 @@ std::string getAliasIfExists(std::string name, std::string source) {
     }
     return name;
 }
+
+/* Returns the most recent common ancestor of source and target */
+std::string getCommonAncestor(std::vector<std::string> source, std::vector<std::string> target) {
+  std::sort(source.begin(), source.end());
+  std::sort(target.begin(), target.end());
+
+  std::vector<std::string> intersection;
+
+  std::set_intersection(source.begin(), source.end(), target.begin(), target.end(), std::back_inserter(intersection));
+
+  return intersection.back();
+}
