@@ -138,12 +138,30 @@ void CheckOut(std::string source, std::string manifest, std::string destination,
  */
 void Merge(std::string source, std::string manifest, std::string target, std::string commands) {
 
-  // checkin the target directory to the repo so we have a manifest to work with
+  // checkin the target directory to the repo so we have a recent manifest to work with
   CheckIn(target, source, commands);
 
-  // get the most recent manifest file name
-  std::sstream mss;
-  mss << get_current_version << ".manifest";
+  // get the manifest file if given a label
+  manifest = getAliasIfExists(manifest, source);
+
+  fs::path src_root(source);
+  fs::path manifest_name(manifest);
+  fs::path manifest_path(src_root / manifest_name);
+
+  // get the current working directory
+  std::string cwd = fs::current_path().string();
+
+  // build path to source manifest
+  std::stringstream source_manifest;
+  source_manifest << cwd << "/" << source << "/" << manifest_name.string();
+
+  // build path to target manifest
+  std::stringstream target_manifest;
+  target_manifest << cwd << "/" << source << "/" << get_current_version(source) << ".manifest";
+
+  // TODO: REMOVE
+  std::cout << source_manifest.str()<< std::endl;
+  std::cout << target_manifest.str() << std::endl;
 
   // TODO: compare artifactIDs from source_manifest and new target_manifest
 
@@ -154,8 +172,20 @@ void Merge(std::string source, std::string manifest, std::string target, std::st
   // TODO: if the same, do nothing
 
   // TODO: if conflict:
-  std::vector<std::string> source_history = GetLinearHistory(manifest);
-  std::vector<std::string> target_history = GetLinearHistory(mss.str());
+  std::vector<std::string> source_history = GetLinearHistory(source_manifest.str(), source);
+  std::vector<std::string> target_history = GetLinearHistory(target_manifest.str(), source);
+
+  std::cout << "source history" << std::endl;
+  for (auto& s : source_history) {
+    std::cout << s << std::endl;
+  }
+
+  std::cout << "target_history" << std::endl;
+  for (auto& s : target_history) {
+    std::cout << s << std::endl;
+  }
+
+
 
   // TODO: find rightmost intersection of the two histories, this is the common ancestor
 

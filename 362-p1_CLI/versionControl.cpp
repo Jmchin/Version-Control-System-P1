@@ -66,6 +66,14 @@ int main(int argc, char* argv[]) {
 
     CheckOut(source, destination, manifest, commands);
   }
+  else if(command == "merge") {
+    string source = argv[2];
+    string manifest = argv[3];
+    string target = argv[4];
+    string commands = GetArguments(argc, argv);
+
+    Merge(source, manifest, target, commands);
+  }
   else if(command == "label") {
     string repo = argv[2];
     string manifest = argv[3];

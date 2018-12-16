@@ -1,4 +1,5 @@
 #include "manifest.h"
+#include <iostream>
 
 /* ============================================================================ */
 /*                              Auxililary Functions                            */
@@ -25,13 +26,21 @@ void LogToManifest(std::string log, std::ofstream& manifest) {
 }
 
 /* Returns a vector of a manifest's history upto the initial repo creation */
-std::vector<std::string> GetLinearHistory(std::string manifest) {
+std::vector<std::string> GetLinearHistory(std::string manifest, std::string repo) {
   // initialize history vector
   std::vector<std::string> history;
 
+  // std::cout << "getlinearhistory: " << manifest << std::endl;
   // GetParent while not create manifest
+  // TODO: read only the manifest file name from the manifest
   std::string child = manifest;
   while (child != "1.manifest") {
+    // build the fully qualified path to the manifest file
+    // std::stringstream path;
+    // std::string cwd = fs::current_path().string();
+
+    // path << cwd << "/" << repo << "/" << child;
+
     std::string parent = GetParent(child);
     history.push_back(parent);
     child = parent;
@@ -42,6 +51,7 @@ std::vector<std::string> GetLinearHistory(std::string manifest) {
 
 std::string GetParent(std::string manifest) {
   // open the manifest file
+  std::cout << "manifest name: " << manifest << std::endl;
   std::ifstream child(manifest);
 
   // get first line of manifest
@@ -76,7 +86,9 @@ std::string GetParent(std::string manifest) {
       }
   }
 
+  std::cout << "Before MANIFEST_NUMBER" << std::endl;
   MANIFEST_NUMBER = std::stoi(manNum);
+  std::cout << "After MANIFEST_NUMBER" << std::endl;
 
   // Was called on root create
   if (lineOneVector[1] == "create") {
@@ -112,13 +124,29 @@ std::string GetParent(std::string manifest) {
 
     // Split manifests apart associating #:qualified path
     // Also storing just number for easier searching later
-    for (int i = 0; i < manifests.size(); i++) {
+    for (size_t i = 0; i < manifests.size(); i++) {
         std::string str;
         std::stringstream manifestFile(manifests[i]);
         std::vector<std::string> manifestVector;
         std::getline(manifestFile, str, MANIFEST_DELIM);
             manifestVector.push_back(str);
-            int manNum = std::stoi(manifestVector[0]);
+              std::string manNumStr = "";
+              std::string manifestSlice = manifestVector[0];
+              for (int i =manifestSlice.length() - 1;i >= 0;i--) {
+              if (manifestSlice[i] == '/') {
+                     break;
+                 }
+                 else {
+                     manNumStr = manifestSlice[i] + manNumStr;
+                 }
+              }
+              std::cout << "Before manNum" << std::endl;
+              std::cout << manNumStr << std::endl;
+
+              int manNum;
+              if (!manNumStr.empty())
+                manNum = std::stoi(manNumStr);
+
             if(manNum < MANIFEST_NUMBER) {
                 mapManifests[manNum] = manifests[i];
                 manifestNums.push_back(manNum);
@@ -133,7 +161,7 @@ std::string GetParent(std::string manifest) {
 
 
     // Now sort the manifest files but with fully qualified path
-    for (int i = 0;i < manifestNums.size(); i++) {
+    for (size_t i = 0;i < manifestNums.size(); i++) {
         std::string qualifiedManifest = (child_proj_dir + mapManifests[manifestNums[i]]);
         sortedManifests.push_back(qualifiedManifest);
     }
