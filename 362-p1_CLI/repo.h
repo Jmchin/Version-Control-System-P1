@@ -10,3 +10,4 @@ void RepoifyDirectory(fs::path src_root, fs::path des_root, std::ofstream& manif
 void Merge(std::string source, std::string manifest, std::string target, std::string commands);
 void InitLabels(std::string destination);
 void LabelManifest(std::string repo, std::string manifest, std::string label);
+std::string withoutChecksum(std::string stringImParsing);

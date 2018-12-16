@@ -127,6 +127,21 @@ void CheckOut(std::string source, std::string manifest, std::string destination,
   }
 }
 
+std::string withoutChecksum(std::string stringImParsing) {
+
+  std::string prefix= "";
+  int i;
+
+  // find first delimiter from the right
+  for (i = stringImParsing.length() - 1; i >= 0; i--) {
+    if (stringImParsing[i] == '/') {
+      break;
+    }
+  }
+  prefix = stringImParsing.substr(0, i);
+  return prefix;
+}
+
 /**
    @param source - the source repository
    @param manifest - the manifest/label specifying the version of the repo
@@ -175,19 +190,6 @@ void Merge(std::string source, std::string manifest, std::string target, std::st
   std::vector<std::string> source_history = GetLinearHistory(source_manifest_ss.str(), source);
   std::vector<std::string> target_history = GetLinearHistory(target_manifest_ss.str(), source);
 
-  // construct vector of target manifest files
-  std::fstream target_manifest;
-  target_manifest.open(target_manifest_ss.str());
-
-  // throw away first two lines
-  std::getline(target_manifest, temp);
-  std::getline(target_manifest, temp);
-  std::vector<std::string> target_manifest_lines;
-  while (std::getline(target_manifest, temp))
-  {
-    target_manifest_lines.push_back(temp);
-  }
-
   std::fstream source_manifest;
   source_manifest.open(manifest_path.string());
 
@@ -196,158 +198,162 @@ void Merge(std::string source, std::string manifest, std::string target, std::st
   std::getline(source_manifest, temp);
 
   // construct vector of source manifest files
-  std::vector<std::string> source_manifest_lines;
+  std::vector<std::string> manifestA;
   while (std::getline(source_manifest, temp))
   {
-    source_manifest_lines.push_back(temp);
+    manifestA.push_back(temp);
   }
-
-  std::string sml_check = "";
-  std::string sml_clean = "";
-  std::string tml_check = "";
-  std::string tml_clean = "";
-
-  // loop over all source manifest files
-  for (size_t i=0; i < source_manifest_lines.size(); i++)
-  {
-    bool exists = false;
-
-    // process lines into filename path and artifactID
-    sml_check = "";
-    sml_clean = source_manifest_lines[i];
-
-    for (int k = sml_clean.length() - 1; k >= 0; k--) {
-      if (sml_clean[k] == '/') {
-        break;
-      }
-      else {
-        sml_check = sml_clean[k] + sml_check;
-      }
-    }
-
-    sml_clean.erase(sml_clean.end() - sml_check.size(), sml_clean.end());
-
-    // loop over all target manifest lines
-    for (size_t j=0; j <target_manifest_lines.size(); j++)
-    {
-      // process lines into filename path and artifactID
-      tml_check = "";
-      tml_clean = target_manifest_lines[j];
-      for (int m = tml_clean.length() - 1; m >= 0; m--) {
-        if (tml_clean[m] == '/') {
-          break;
-        }
-        else {
-          tml_check = tml_clean[m] + tml_check;
-        }
-      }
-      tml_clean.erase(tml_clean.end() - tml_check.size(), tml_clean.end());
-
-      // file exists in both source and target
-      if (sml_clean == tml_clean)
-      {
-        exists = true;
-
-        // files are different
-        if (sml_check != tml_check)
-        {
-
-          std::fstream ancestor_manifest;
-          std::string common = getCommonAncestor(source_history, target_history);
-          ancestor_manifest.open(common);
-
-          // throw away first two lines
-          std::getline(ancestor_manifest, temp);
-          std::getline(ancestor_manifest, temp);
-          std::vector<std::string> ancestor_manifest_lines;
-
-          // get all ancestor file lines
-          while (std::getline(target_manifest, temp))
-          {
-            ancestor_manifest_lines.push_back(temp);
-          }
-
-          // TODO REMOVE
-          for (auto l : ancestor_manifest_lines){
-            std::cout << l << std::endl;
-          }
-          //loop over ancestor files lines
-          for (size_t i=0; i < ancestor_manifest_lines.size(); i++){
-            std::string anc_check = "";
-            std::string anc_clean = ancestor_manifest_lines[i];
-            for (int k = anc_clean.length() - 1; k >= 0; k--) {
-              if (anc_clean[k] == '/') {
-                break;
-              }
-              else {
-                anc_check = anc_clean[k] + anc_check;
-              }
-            }
-            anc_clean.erase(anc_clean.end() - anc_check.size(), anc_clean.end());
-            // loop over target file lines
-            for (size_t j=0; target_manifest_lines.size(); j++)
-            {
-              std::string tml_check = "";
-              std::string tml_clean = target_manifest_lines[j];
-              for (int m = tml_clean.length() - 1; m >= 0; m--) {
-                if (tml_clean[m] == '/') {
-                  break;
-                }
-                else {
-                  tml_check = tml_clean[m] + tml_check;
-                }
-              }
-              tml_clean.erase(tml_clean.end() - tml_check.size(), tml_clean.end());
-
-              //found a file that didnt exist inside target manifest, I think lol
-              if (anc_check != tml_check)
-              {
-                std::cout << "GOT THIS FAR" << std::endl;
-                std::stringstream destination_path;
-                destination_path << tml_clean << boost::filesystem::extension(tml_check);
-
-                fs::copy_file(ancestor_manifest_lines[i],destination_path.str(),fs::copy_option::overwrite_if_exists);
-              }
-            }
-          }
-        }
-
-        // we found a match, so break out of the loop
-        break;
-      }
-    }
-    if (!exists)
-    {
-      // TODO: wut?
-      std::cout << "lol i dont even know" << std::endl;
-    }
-  }
-
-  // close our files
-  target_manifest.close();
   source_manifest.close();
 
+  // construct vector of target manifest files
+  std::fstream target_manifest;
+  target_manifest.open(target_manifest_ss.str());
+
+  // throw away first two lines
+  std::getline(target_manifest, temp);
+  std::getline(target_manifest, temp);
+  std::vector<std::string> manifestB;
+  while (std::getline(target_manifest, temp))
+  {
+    manifestB.push_back(temp);
+  }
+  target_manifest.close();
+
+  std::unordered_map<std::string, std::string> inACopy;   // files to rename from source
+  std::unordered_map<std::string, std::string> inBCopy;   // files to rename from target
+  std::vector<std::string> CommonAncestorPrefixes;        // files to get from common ancestor
+
+  std::unordered_map<std::string, std::string> manAMap;
+  std::unordered_map<std::string, std::string> manBMap;
+
+  // map( key: prefix, value: prefix/artifactID)
+    for(auto x: manifestA) {
+        std::string prefix = withoutChecksum(x);
+        manAMap[prefix] = x;
+    }
+
+    for(auto x: manifestB) {
+        std::string prefix = withoutChecksum(x);
+        manBMap[prefix] = x;
+    }
+
+
+    for(auto x: manifestA) {
+        std::string prefix = withoutChecksum(x);
+        if (manBMap.find(prefix) != manBMap.end()) {
+            // If they're the same
+            if (manBMap[prefix] == x) {
+                // Do nothing, checksums match
+                // Left in for clarity
+            }
+            else {
+                // File exists, but different checksum
+                CommonAncestorPrefixes.push_back(prefix);
+                inACopy[prefix] = x;
+                inBCopy[prefix] = manBMap[prefix];
+
+            }
+        }
+
+        // TODO
+        else {
+            // Copy x
+            // The entire file is only in A
+
+          // remove the file name so we can have boost create directories
+          std::string directories = withoutChecksum(prefix);
+          // replace source dir with target dir
+          boost::replace_first(directories, source, target);
+          std::cout << "directories: " << directories << std::endl;
+          // fs::create_directories(directories);
+
+        }
+    }
+
+    // copy files from source to target e.g foo_MR.cpp
+    for (auto& kv : inACopy) {
+      // the path to specific artifactID
+      std::string file_to_copy = kv.second;
+
+      // build the path to target directory
+      std::string destination_str = kv.first;
+      boost::replace_first(destination_str, source, target);
+
+      fs::path destination_path(destination_str);
+
+      // build the final path to copy to
+      std::stringstream ss;
+      ss << destination_path.parent_path().string() << "/"
+         << destination_path.stem().string() << "_MR"
+         << destination_path.extension().string();
+
+      fs::copy_file(file_to_copy, ss.str(), fs::copy_option::overwrite_if_exists);
+
+    }
+
+    // copy files from target to target e.g foo_MT.cpp
+    for (auto& kv : inBCopy) {
+      // the path to specific artifactID
+      std::string file_to_copy = kv.second;
+
+      // build the path to target directory
+      std::string destination_str = kv.first;
+      boost::replace_first(destination_str, source, target);
+
+      fs::path destination_path(destination_str);
+
+      // build the final path to copy to
+      std::stringstream ss;
+      ss << destination_path.parent_path().string() << "/"
+         << destination_path.stem().string() << "_MT"
+         << destination_path.extension().string();
+
+      fs::copy_file(file_to_copy, ss.str(), fs::copy_option::overwrite_if_exists);
+
+    }
+
+  // construct vector of ancestor manifest files
+    std::string common_ancestor = getCommonAncestor(source_history, target_history);
+    std::fstream ancestor_manifest;
+    ancestor_manifest.open(common_ancestor);
+
+
+  // throw away first two lines
+  std::getline(ancestor_manifest, temp);
+  std::getline(ancestor_manifest, temp);
+  std::vector<std::string> manifestG;
+  while (std::getline(ancestor_manifest, temp))
+  {
+    manifestG.push_back(temp);
+  }
+
+  // loop over all ancestor files
+  for (auto& x : CommonAncestorPrefixes) {
+    for (auto& y : manifestG) {
+      if (x == withoutChecksum(y)) {
+        std::string file_to_copy = y;
+
+        // build the path to target directory
+        std::string destination_str = withoutChecksum(y);
+        boost::replace_first(destination_str, source, target);
+
+        fs::path destination_path(destination_str);
+
+        // build the final path to copy to
+        std::stringstream ss;
+        ss << destination_path.parent_path().string() << "/"
+           << destination_path.stem().string() << "_MG"
+           << destination_path.extension().string();
+
+        fs::copy_file(file_to_copy, ss.str(), fs::copy_option::overwrite_if_exists);
+
+      }
+    }
+  }
+  ancestor_manifest.close();
+
+
 }
-
-
-
-
-  // TODO: compare artifactIDs from source_manifest and new target_manifest
-  // std::cout << getCommonAncestor(source_history, target_history) << std::endl;
-
-  // TODO: if exists in source_manifest and not in target_manifest, copy file to target directory and LogToManifest
-
-  // TODO: if not in source_manifest, and exists in target_manifest, do nothing
-
-  // TODO: if the same, do nothing
-
-  // TODO: if conflict:
-
-  // TODO: find rightmost intersection of the two histories, this is the common ancestor
-
-  // TODO: copy files from source and ancestor to target_directory  (e.g foo_MR.cpp, foo_MG.cpp)
-
-  // TODO:rename file in target_directory that was different (e.g foo_MT.cpp)
 
 /**
     @param src_root - filesystem path to project directory
