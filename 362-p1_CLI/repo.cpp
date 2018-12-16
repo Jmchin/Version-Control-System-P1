@@ -136,8 +136,20 @@ void CheckOut(std::string source, std::string manifest, std::string destination,
  */
 void Merge(std::string source, std::string manifest, std::string target, std::string commands) {
 
+  // hack together a checkin commands line for the manifest LOL
+  std::string str;
+  char DELIMITER = ' ';
+  std::stringstream lineOne(commands);
+  std::vector<std::string> commandsVector;
+  while (std::getline(lineOne, str, DELIMITER)) {
+    commandsVector.push_back(str);
+  }
+
+  std::string checkin_commands;
+  checkin_commands += commandsVector[0] + " checkin " + commandsVector[4] + " " + commandsVector[2];
+
   // checkin the target directory to the repo so we have a recent manifest to work with
-  CheckIn(target, source, commands);
+  CheckIn(target, source, checkin_commands);
 
   // get the manifest file if given a label
   manifest = getAliasIfExists(manifest, source);
@@ -158,8 +170,8 @@ void Merge(std::string source, std::string manifest, std::string target, std::st
   target_manifest << cwd << "/" << source << "/" << get_current_version(source) << ".manifest";
 
   // TODO: REMOVE
-  std::cout << source_manifest.str()<< std::endl;
-  std::cout << target_manifest.str() << std::endl;
+  std::cout << "source manifest: " << source_manifest.str() << std::endl;
+  std::cout << "target manifest: " << target_manifest.str() << std::endl;
 
   // TODO: compare artifactIDs from source_manifest and new target_manifest
 
@@ -170,7 +182,10 @@ void Merge(std::string source, std::string manifest, std::string target, std::st
   // TODO: if the same, do nothing
 
   // TODO: if conflict:
+  std::cout << "getting source history" << std::endl << std::endl;
   std::vector<std::string> source_history = GetLinearHistory(source_manifest.str(), source);
+
+  std::cout << "getting target history" << std::endl << std::endl;
   std::vector<std::string> target_history = GetLinearHistory(target_manifest.str(), source);
 
   std::cout << "source history" << std::endl;

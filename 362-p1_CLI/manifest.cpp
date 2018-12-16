@@ -33,17 +33,35 @@ std::vector<std::string> GetLinearHistory(std::string manifest, std::string repo
   // std::cout << "getlinearhistory: " << manifest << std::endl;
   // GetParent while not create manifest
   // TODO: read only the manifest file name from the manifest
-  std::string child = manifest;
+  std::string child = "";
+  for (int i = manifest.length() - 1;i >= 0;i--) {
+    if (manifest[i] == '/') {
+      break;
+    }
+    else {
+      child = manifest[i] + child;
+    }
+  }
+
+  std::string childPath = manifest;
+
   while (child != "1.manifest") {
-    // build the fully qualified path to the manifest file
-    // std::stringstream path;
-    // std::string cwd = fs::current_path().string();
 
-    // path << cwd << "/" << repo << "/" << child;
-
-    std::string parent = GetParent(child);
+    std::string parent = GetParent(childPath);
+    std::cout << "GETLINEARHISTORY parent: " << parent << std::endl;
     history.push_back(parent);
-    child = parent;
+    childPath = parent;
+
+    child = "";
+    for (int i = childPath.length() - 1;i >= 0;i--) {
+      if (manifest[i] == '/') {
+        break;
+        }
+        else {
+            child = childPath[i] + child;
+        }
+     }
+    std::cout << "GETLINEARHISTORY child:" << child << std::endl;
   }
 
   return history;
@@ -51,7 +69,7 @@ std::vector<std::string> GetLinearHistory(std::string manifest, std::string repo
 
 std::string GetParent(std::string manifest) {
   // open the manifest file
-  std::cout << "manifest name: " << manifest << std::endl;
+  std::cout << "GETPARENT manifest name: " << manifest << std::endl;
   std::ifstream child(manifest);
 
   // get first line of manifest
@@ -86,9 +104,7 @@ std::string GetParent(std::string manifest) {
       }
   }
 
-  std::cout << "Before MANIFEST_NUMBER" << std::endl;
   MANIFEST_NUMBER = std::stoi(manNum);
-  std::cout << "After MANIFEST_NUMBER" << std::endl;
 
   // Was called on root create
   if (lineOneVector[1] == "create") {
@@ -96,7 +112,7 @@ std::string GetParent(std::string manifest) {
   }
   else if (lineOneVector[1] == "checkout") {
       std::string cwd = boost::filesystem::current_path().string();
-      return cwd + "/" + lineOneVector[3];
+      return cwd + "/" + lineOneVector[2] + "/" + lineOneVector[3];
   }
 
   else if (lineOneVector[1] == "checkin") {
@@ -115,7 +131,10 @@ std::string GetParent(std::string manifest) {
             int subLen = child_proj_dir.length();
             int endLen = str.length() - subLen;
             std::string manifestFile = str.substr(subLen, endLen);
-            manifests.push_back(manifestFile);
+            if (manifestFile.find("manifest") != std::string::npos) {
+                manifests.push_back(manifestFile);
+            }
+
         }
     }
 
@@ -140,12 +159,8 @@ std::string GetParent(std::string manifest) {
                      manNumStr = manifestSlice[i] + manNumStr;
                  }
               }
-              std::cout << "Before manNum" << std::endl;
-              std::cout << manNumStr << std::endl;
 
-              int manNum;
-              if (!manNumStr.empty())
-                manNum = std::stoi(manNumStr);
+              int manNum = std::stoi(manNumStr);
 
             if(manNum < MANIFEST_NUMBER) {
                 mapManifests[manNum] = manifests[i];
@@ -186,16 +201,16 @@ std::string GetParent(std::string manifest) {
         }
         // We're currently seaching for checkin parent,
         // which is a checkout. so find the checkout's last item if it matches
-        if (manifestLineOneVector[1] == "checkout") {
-            checkOutItem = currentManifest;
-            break;
+        if (manifestLineOneVector[1] == "checkout" && manifestLineOneVector[4] == parent_proj) {
+          checkOutItem = currentManifest;
+          break;
         }
         parent.close();
-        sortedManifests.pop_back();
+        sortedManifests.pop_back();  }
 
-  }
+  std::string cwd = boost::filesystem::current_path().string() + "/" +  checkOutItem;
 
-  return checkOutItem;
+  return cwd;
 
   }
   return "";
