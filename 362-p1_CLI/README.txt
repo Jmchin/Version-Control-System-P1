@@ -1,4 +1,4 @@
-# Version-Control-System Project 1 #
+# Version-Control-System Project 3 #
 
 ### General Information ###
 * CPSC 362 - #12846/12847
@@ -34,22 +34,29 @@ artifactID for that specific file.
 
 
 ### Usage: ###
-    - Run versionControl.cpp with ***g++ -std=c++11 versionControl.cpp -lboost_filesystem -lboost_system***
+    - Run versionControl.cpp with ***g++ -std=c++11 -lboost_filesystem
+    -lboost_system versionControl.cpp manifest.cpp repo.cpp util.cpp***
     - Run output with ***./a.out***
 
-### Features: ###
+#### Create: ####
+     - ./a.out create <project directory> <repo directory>
+     - creates a repository from the project directory
 
-* Given an existing project directory, creates a repository by copying
-  the existing file directory structure
+#### Check-in: ####
+     - ./a.out checkin <project directory> <repo directory>
+     - checks in a project tree into an existing repository
 
-* Creates a new directory for every non-directory file in the original
-  * project tree stores artifacts in these new folders, named by the weighted checksum of the file's contents, as well as its size in bytes
-    * e.g "6648-L11.txt"
-    
-### Member Contributions: ###
+#### Check-out: ####
+     - ./a.out checkout <repo directory> <manifest/label> <target
+     directory>
+     - checks out a specific version of a repository, specified by the
+     manifest into the target directory
 
-* Kevin: Project Design, Create(), Boost implementation.
-* Justin: FolderifLeaf(), Readme, testing.
-* James: CheckSum(), testing.
-* Alex: DeepCopyDir(), FormatFileName()
+#### Label: ####
+     - ./a.out label <repo directory> <manifest> <label>
+     - labels a manifest with a string
 
+#### Merge: ####
+     - ./a.out merge <repo directory> <manifest/label> <target directory>
+     - merges a specific version of a repository into an existing
+     target directory
