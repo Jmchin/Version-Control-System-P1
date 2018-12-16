@@ -1,7 +1,5 @@
 #include "repo.h"
 #include "manifest.h"
-#include "creationOrder.h"
-#include "mapfile.h"
 
 /**
    @param source - path to the project directory to create a repo from

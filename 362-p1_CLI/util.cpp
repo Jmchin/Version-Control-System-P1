@@ -102,7 +102,6 @@ int get_current_version(std::string repo_root) {
   return version;
 }
 
-
 void update_version(std::string repo_root) {
     int version_value;
     std::fstream myFile;
@@ -135,4 +134,137 @@ void update_version(std::string repo_root) {
             // std::cout << "Version: " << version_value << "\n";
         }
     myFile.close();
+}
+
+std::vector<CreationObject> GetCreationOrder(std::string manifestFile) {
+  std::vector<std::string> myLines = GetPaths(manifestFile);
+  std::vector<std::string> parsed;
+  std::vector<CreationObject> orderedObjects;
+  std::set<CreationObject> createdObjs;
+
+
+  std::string regx = "^";  // matches the beginning of a line
+  regx.append(fs::current_path().string());
+  std::regex pattern(regx);
+
+  for(std::string s: myLines) {
+    parsed.push_back(std::regex_replace(s, pattern, ""));
+  }
+
+  int maxSlashes = 0;
+  for(std::string s: parsed) {
+    int curItemCount = count(s.begin(), s.end(), '/');
+    if (curItemCount > maxSlashes) {
+      maxSlashes = curItemCount;
+    }
+  }
+
+  for(int i = 1;i <= maxSlashes;i++) {
+    for(std::string s: parsed) {
+      int slashCount = count(s.begin(), s.end(), '/');
+      if (slashCount == i) {
+        std::vector<std::string> split = Split(s,"/");
+        std::string newPath = "";
+        for(int j = 0;j <i-1;j++) {
+          newPath.append(split[j]);
+          newPath.append("/");
+        }
+
+        newPath.append(split[slashCount-1]);
+        CreationObject newCreationObj = CreationObject(s, newPath, false);
+        if(createdObjs.count(newCreationObj) == 0) {
+          orderedObjects.push_back(newCreationObj);
+          createdObjs.insert(newCreationObj);
+        }
+
+      }
+      else if (slashCount > i) {
+        std::vector<std::string> split = Split(s, "/");
+        std::string thisDeep = "";
+        for(int j = 0; j < i;j++) {
+          thisDeep.append(split[j]);
+          thisDeep.append("/");
+        }
+
+        CreationObject newCreationObj = CreationObject(thisDeep, thisDeep, true);
+        if(createdObjs.count(newCreationObj) == 0) {
+          orderedObjects.push_back(newCreationObj);
+          createdObjs.insert(newCreationObj);
+        }
+      }
+      else {
+        continue;
+      }
+    }
+  }
+  return orderedObjects;
+}
+
+std::vector<std::string> GetPaths(std::string manifestFile) {
+  std::ifstream myFile;
+  myFile.open(manifestFile);
+  std::string line;
+  std::vector<std::string> pathList;
+
+  // Gross skipping of first 2 lines:
+  getline(myFile, line);
+  getline(myFile, line);
+
+
+  while(getline(myFile, line)) {
+    pathList.push_back(line);
+  }
+
+  myFile.close();
+  return pathList;
+}
+
+
+std::vector<std::string> Split(std::string str, std::string sep) {
+  char* cstr=const_cast<char*>(str.c_str());
+  char* current;
+  std::vector<std::string> arr;
+  current=strtok(cstr,sep.c_str());
+  while(current!=NULL){
+    arr.push_back(current);
+    current=strtok(NULL,sep.c_str());
+  }
+  return arr;
+}
+
+/* returns a manifest given a label, if exists*/
+std::string getAliasIfExists(std::string name, std::string source) {
+  std::ifstream myFile;
+  std::stringstream pathtolabel;
+
+    pathtolabel << fs::current_path().string()
+                << "/"
+                << source
+                << "/"
+                << ".labels";
+
+    myFile.open(pathtolabel.str());
+
+    bool found = false;
+    std::string key;
+    std::string value;
+
+    while(!myFile.eof()) {
+
+      getline(myFile, key);
+      getline(myFile, value);
+
+      if(key == name) {
+        found = true;
+        break;
+      }
+
+    }
+
+    myFile.close();
+
+    if(found) {
+        return value;
+    }
+    return name;
 }

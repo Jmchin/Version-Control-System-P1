@@ -14,8 +14,6 @@ $COMPILER -Wall \
        -o cli_vcs \
        -lboost_filesystem \
        -lboost_system \
-       mapfile.cpp \
-       creationOrder.cpp \
        manifest.cpp \
        versionControl.cpp \
        util.cpp \
